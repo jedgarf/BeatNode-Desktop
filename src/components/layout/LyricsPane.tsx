@@ -55,6 +55,7 @@ export function LyricsPane({ lyrics }: { lyrics: LyricsResult }) {
   if (!lines) {
     return (
       <div className={`h-full w-full max-w-xl animate-fade-up overflow-y-auto px-4 py-10 ${hidden} ${fade}`}>
+        <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-fg/40">Lyrics without timing</p>
         <p className="whitespace-pre-wrap text-lg font-medium leading-9 text-fg/75">{lyrics.plain}</p>
       </div>
     )
