@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { usePlayerStore } from '../player/store'
+import { useLibraryNoticeStore } from './libraryNotice'
 import { usePlaylistStore } from '../playlists/store'
 
 const SAVE_DEBOUNCE_MS = 300
@@ -28,7 +29,11 @@ export function usePersistence(): void {
 
     const unsubFolderChanges = window.beatnode.onLibraryChange(({ added, removedPaths }) => {
       const player = usePlayerStore.getState()
+      // only what really got in: duplicates and already known files are dropped by the store
+      const known = new Set(player.library.map((t) => t.id))
       player.addToLibrary(added)
+      const inLibrary = new Set(usePlayerStore.getState().library.map((t) => t.id))
+      useLibraryNoticeStore.getState().announce(added.filter((t) => !known.has(t.id) && inLibrary.has(t.id)))
       if (removedPaths.length) {
         const gone = new Set(removedPaths)
         player.library.filter((t) => gone.has(t.path)).forEach((t) => player.removeFromLibrary(t.id))

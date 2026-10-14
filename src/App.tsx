@@ -1,4 +1,5 @@
 import { useState, type ComponentType } from 'react'
+import { LibraryNotice } from './components/layout/LibraryNotice'
 import { NowPlaying } from './components/layout/NowPlaying'
 import { useAutoOpenForVideo } from './components/layout/useAutoOpenForVideo'
 import { useNowPlayingStore } from './features/player/nowPlayingStore'
@@ -63,6 +64,7 @@ export default function App() {
       </div>
       <PlayerBar />
       <SessionResume />
+      <LibraryNotice />
     </div>
   )
 }

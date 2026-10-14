@@ -40,3 +40,4 @@ export const SettingsIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="
 export const CollapseIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m11 17-5-5 5-5M18 17l-5-5 5-5" /></Icon>
 export const ExpandIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m13 17 5-5-5-5M6 17l5-5-5-5" /></Icon>
 export const LyricsIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M8 8.5h8M8 12.5h5" /></Icon>
+export const CloseIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M18 6 6 18M6 6l12 12" /></Icon>
