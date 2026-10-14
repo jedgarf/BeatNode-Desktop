@@ -3,6 +3,7 @@ import { PageTitle } from '../../components/ui/PageTitle'
 import { ArtworkSection } from './ArtworkSection'
 import { BackgroundSection } from './BackgroundSection'
 import { FoldersSection } from './FoldersSection'
+import { LyricsSection } from './LyricsSection'
 import { SyncSection } from './SyncSection'
 import { useThemeStore, type ThemeMode } from './theme'
 
@@ -50,6 +51,7 @@ export function SettingsView() {
       </section>
       <BackgroundSection />
       <ArtworkSection />
+      <LyricsSection />
       <FoldersSection />
       <SyncSection />
       <section className="rounded-2xl bg-fg/[0.04] p-5 ring-1 ring-fg/10">

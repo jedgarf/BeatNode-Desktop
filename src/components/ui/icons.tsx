@@ -34,8 +34,9 @@ export function VolumeLevelIcon({ volume, muted, ...p }: IconProps & { volume: n
 export const MoreIcon = (p: IconProps) => <Icon {...p}><circle cx="5" cy="12" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="19" cy="12" r="1.8" /></Icon>
 export const PlusIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M12 5v14M5 12h14" /></Icon>
 export const HomeIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><path d="M9 22V12h6v10" /></Icon>
-export const LibraryIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></Icon>
+export const LibraryIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m16 6 4 14M12 6v14M8 8v12M4 4v16" /></Icon>
 export const PlaylistsIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /></Icon>
 export const SettingsIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6" /></Icon>
 export const CollapseIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m11 17-5-5 5-5M18 17l-5-5 5-5" /></Icon>
 export const ExpandIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m13 17 5-5-5-5M6 17l5-5-5-5" /></Icon>
+export const LyricsIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M8 8.5h8M8 12.5h5" /></Icon>

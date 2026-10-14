@@ -51,6 +51,7 @@ The installers are not code signed yet, so your OS will warn you the first time:
 - Playlist sync through a plain folder, with last-edit-wins merging
 - Keeps playing in the tray when you close the window
 - Offers to continue where you left off the next time you open the app
+- Live, time-synced lyrics in Now Playing, from a `.lrc` file next to the song, the song's tags, or the LRCLIB catalog. The online lookup sends the title, artist, album and length, and can be switched off in Settings
 - System media keys and Now Playing integration
 - Light, dark or follow-system theme
 

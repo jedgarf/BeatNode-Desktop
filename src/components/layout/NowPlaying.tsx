@@ -4,9 +4,12 @@ import { mediaElement } from '../../features/player/mediaElement'
 import { useNowPlayingStore } from '../../features/player/nowPlayingStore'
 import { selectCurrentTrack, usePlayerStore } from '../../features/player/store'
 import { CoverArt } from '../ui/CoverArt'
-import { ChevronDownIcon, ExitFullscreenIcon, FullscreenIcon, NextIcon, PauseIcon, PlayIcon, PrevIcon, VolumeLevelIcon } from '../ui/icons'
+import { ChevronDownIcon, ExitFullscreenIcon, FullscreenIcon, LyricsIcon, NextIcon, PauseIcon, PlayIcon, PrevIcon, VolumeLevelIcon } from '../ui/icons'
 import { Equalizer } from '../ui/Equalizer'
 import { Slider } from '../ui/Slider'
+import { LyricsPane } from './LyricsPane'
+import { useLyrics } from '../../features/player/useLyrics'
+import { useUiStore } from '../../features/settings/uiStore'
 import type { Track } from '../../shared/types'
 
 const CONTROLS_HIDE_MS = 2500
@@ -38,6 +41,10 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
   const [controlsVisible, setControlsVisible] = useState(true)
 
   const isVideo = track?.kind === 'video'
+  const lyrics = useLyrics(isVideo ? null : track)
+  const lyricsOn = useUiStore((s) => s.showLyrics)
+  const toggleLyrics = useUiStore((s) => s.toggleLyrics)
+  const showLyrics = lyrics !== null && lyricsOn
 
   // put the shared element in the page while a video is showing
   useEffect(() => {
@@ -116,6 +123,18 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
           <p className="truncate text-sm font-semibold" title={track?.title}>{track?.title ?? 'Nothing playing'}</p>
           {track && <p className="truncate text-xs text-fg/50" title={track.artist}>{track.artist}</p>}
         </div>
+        {lyrics && (
+          <button
+            type="button"
+            onClick={toggleLyrics}
+            aria-label={lyricsOn ? 'Hide lyrics' : 'Show lyrics'}
+            aria-pressed={lyricsOn}
+            title={lyricsOn ? 'Hide lyrics' : 'Show lyrics'}
+            className={`no-drag rounded-full p-2 transition hover:bg-fg/10 ${lyricsOn ? 'text-accent-soft' : 'text-fg/70 hover:text-fg'}`}
+          >
+            <LyricsIcon size={20} />
+          </button>
+        )}
         {isVideo && (
           <button
             type="button"
@@ -143,17 +162,20 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
             aria-label="Video"
           />
         ) : (
-          <div className="flex h-full flex-col items-center justify-center gap-10 p-8">
-            <Record track={track} spinning={isPlaying} />
-            <div key={track?.id} className="animate-fade-up text-center">
-              <h2 className="text-2xl font-bold tracking-tight">{track?.title ?? 'Nothing playing'}</h2>
-              {track && <p className="mt-1 text-fg/60">{track.artist}</p>}
-              {track && (
-                <div className="mt-4 flex justify-center text-accent-soft">
-                  <Equalizer playing={isPlaying} className="h-4" />
-                </div>
-              )}
+          <div className={`flex h-full items-center justify-center p-8 ${showLyrics ? 'gap-10' : 'flex-col gap-10'}`}>
+            <div className={`flex flex-col items-center gap-10 ${showLyrics ? 'w-[42%] shrink-0' : ''}`}>
+              <Record track={track} spinning={isPlaying} />
+              <div key={track?.id} className="animate-fade-up text-center">
+                <h2 className="text-2xl font-bold tracking-tight">{track?.title ?? 'Nothing playing'}</h2>
+                {track && <p className="mt-1 text-fg/60">{track.artist}</p>}
+                {track && (
+                  <div className="mt-4 flex justify-center text-accent-soft">
+                    <Equalizer playing={isPlaying} className="h-4" />
+                  </div>
+                )}
+              </div>
             </div>
+            {showLyrics && lyrics && <LyricsPane key={track?.id} lyrics={lyrics} />}
           </div>
         )}
 

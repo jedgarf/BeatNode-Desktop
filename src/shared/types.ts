@@ -66,6 +66,27 @@ export interface LibraryPrefs {
   sort: LibrarySort
 }
 
+export interface LyricLine {
+  // seconds from the start
+  time: number
+  text: string
+}
+
+export interface LyricsRequest {
+  path: string
+  title: string
+  artist: string
+  album: string
+  duration: number
+}
+
+export interface LyricsResult {
+  // timed lines when we have them, plain text otherwise
+  lines: LyricLine[] | null
+  plain: string | null
+  source: 'file' | 'embedded' | 'online'
+}
+
 export interface SessionState {
   trackId: string
   position: number
@@ -94,6 +115,9 @@ export interface BeatNodeApi {
   sendTrayCommand(command: TrayCommand): void
   getBackgroundPlayback(): Promise<boolean>
   setBackgroundPlayback(enabled: boolean): Promise<void>
+  getLyrics(request: LyricsRequest): Promise<LyricsResult | null>
+  getOnlineLyrics(): Promise<boolean>
+  setOnlineLyrics(enabled: boolean): Promise<void>
   getSession(): Promise<SessionState | null>
   saveSession(payload: { trackId: string; position: number; queueIds?: string[] }): Promise<void>
   clearSession(): Promise<void>
