@@ -100,12 +100,13 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
           <CoverArt key={track.id} track={track} className="w-[70%] max-w-3xl animate-breathe rounded-full blur-[120px] saturate-150" />
         </div>
       )}
+      {/* the window drag strip underneath swallows clicks, so buttons here opt out */}
       <header className="relative flex items-center gap-3 px-6 pb-2 pt-3">
         <button
           type="button"
           onClick={() => close(false)}
           aria-label="Close now playing"
-          className="rounded-full px-3 py-1.5 text-sm text-fg/70 transition hover:bg-fg/10 hover:text-fg"
+          className="no-drag rounded-full px-3 py-1.5 text-sm text-fg/70 transition hover:bg-fg/10 hover:text-fg"
         >
           Close
         </button>
@@ -119,7 +120,7 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
             onClick={toggleFullscreen}
             aria-label="Fullscreen"
             title="Fullscreen (F)"
-            className="rounded-full px-3 py-1.5 text-sm text-fg/70 transition hover:bg-fg/10 hover:text-fg"
+            className="no-drag rounded-full px-3 py-1.5 text-sm text-fg/70 transition hover:bg-fg/10 hover:text-fg"
           >
             Fullscreen
           </button>
