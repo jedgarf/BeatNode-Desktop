@@ -1,4 +1,8 @@
-# BeatNode Desktop
+<p align="center">
+  <img src="public/beatnode.svg" alt="BeatNode logo" width="128" height="128">
+</p>
+
+<h1 align="center">BeatNode Desktop</h1>
 
 A local-first music and video player for macOS, Windows and Linux. Point it at your folders, it builds the library, and your playlists can follow you across machines through any synced folder (Dropbox, iCloud Drive, Syncthing, a USB stick).
 
