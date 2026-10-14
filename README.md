@@ -6,7 +6,7 @@ No account, no server, nothing leaves your machine.
 
 ## Features
 
-- Plays audio (`mp3`, `flac`, `wav`, `m4a`) and video (`mp4`, `m4v`, `webm`, `mov`)
+- Plays audio (`mp3`, `flac`, `wav`, `m4a`, `aac`, `ogg`, `oga`, `opus`, `weba`) and video (`mp4`, `m4v`, `webm`, `mov`, `mkv`, `ogv`)
 - Watched folders: add a folder once, new files are picked up and removed files disappear on their own
 - Add individual files from the file dialog
 - Tags and cover art read from the files, video thumbnails generated on import
@@ -103,5 +103,5 @@ Electron, React 18, TypeScript, Vite, Zustand, Tailwind CSS 4, better-sqlite3, m
 
 ## Known limits
 
-- Video support is whatever Chromium can decode (H.264/AAC mp4, VP8/VP9 webm). Other codecs may not play.
+- Video support is whatever Chromium can decode (H.264/AAC mp4, VP8/VP9 webm). Other codecs may not play. This includes `mkv` files with HEVC video or DTS/AC3 audio, and embedded subtitles are not shown.
 - Tracks are matched across machines by tags, so untagged files with the same name can collide.

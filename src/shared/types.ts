@@ -1,7 +1,8 @@
 
-export const AUDIO_EXTENSIONS = ['mp3', 'flac', 'wav', 'm4a'] as const
-// what chromium can decode (h264/aac mp4, vp8/vp9 webm), other codecs may not play
-export const VIDEO_EXTENSIONS = ['mp4', 'm4v', 'webm', 'mov'] as const
+export const AUDIO_EXTENSIONS = ['mp3', 'flac', 'wav', 'm4a', 'aac', 'ogg', 'oga', 'opus', 'weba'] as const
+// what chromium can decode (h264/aac mp4, vp8/vp9 webm), other codecs may not play.
+// mkv is only the container: hevc and dts/ac3 inside it won't play
+export const VIDEO_EXTENSIONS = ['mp4', 'm4v', 'webm', 'mov', 'mkv', 'ogv'] as const
 
 export type MediaKind = 'audio' | 'video'
 
