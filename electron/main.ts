@@ -147,6 +147,8 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.mjs'),
       // keep playback and saves running while hidden
       backgroundThrottling: false,
+      // no devtools in a built app, not from the menu and not from a shortcut
+      devTools: Boolean(VITE_DEV_SERVER_URL),
     },
   })
 

@@ -104,7 +104,7 @@ function createPopover(): BrowserWindow {
     alwaysOnTop: true,
     hasShadow: true,
     backgroundColor: '#00000000',
-    webPreferences: { preload: path.join(__dirname, 'preload.mjs'), backgroundThrottling: false },
+    webPreferences: { preload: path.join(__dirname, 'preload.mjs'), backgroundThrottling: false, devTools: Boolean(process.env['VITE_DEV_SERVER_URL']) },
   })
   win.setAlwaysOnTop(true, 'pop-up-menu')
   win.on('blur', () => {
