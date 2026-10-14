@@ -115,13 +115,12 @@ export function LibraryView() {
             type="button"
             onClick={importTracks}
             disabled={isImporting}
-            aria-label="Add media"
-            title={isImporting ? 'Importing…' : 'Add media'}
-            className="flex size-10 items-center justify-center rounded-full bg-accent text-white shadow-lg shadow-accent-glow transition hover:bg-accent-soft disabled:opacity-60"
+            className="flex items-center gap-2 rounded-full bg-accent py-2 pl-3.5 pr-4 text-sm font-semibold text-white shadow-lg shadow-accent-glow transition hover:bg-accent-soft disabled:opacity-60"
           >
             {isImporting
               ? <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-              : <PlusIcon size={20} />}
+              : <PlusIcon size={18} />}
+            {isImporting ? 'Importing…' : 'Add media'}
           </button>
         </div>
       </header>
