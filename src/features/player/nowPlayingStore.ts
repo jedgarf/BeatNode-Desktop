@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { selectCurrentTrack, usePlayerStore } from './store'
 
 interface NowPlayingState {
   open: boolean
@@ -6,8 +7,17 @@ interface NowPlayingState {
   toggle: () => void
 }
 
-export const useNowPlayingStore = create<NowPlayingState>()((set) => ({
+// a video with its picture closed shouldn't keep playing, so closing it pauses
+function pauseIfVideo() {
+  const player = usePlayerStore.getState()
+  if (selectCurrentTrack(player)?.kind === 'video') player.pause()
+}
+
+export const useNowPlayingStore = create<NowPlayingState>()((set, get) => ({
   open: false,
-  setOpen: (open) => set({ open }),
-  toggle: () => set((s) => ({ open: !s.open })),
+  setOpen: (open) => {
+    if (!open && get().open) pauseIfVideo()
+    set({ open })
+  },
+  toggle: () => get().setOpen(!get().open),
 }))
