@@ -40,6 +40,10 @@ export function shouldHideOnClose(): boolean {
   return !quitting && report.isPlaying && getKv<boolean>(BACKGROUND_KEY, true)
 }
 
+export function sendPlayerCommand(command: PlayerCommand) {
+  getWindow()?.webContents.send('player:command', command)
+}
+
 function sendCommand(command: PlayerCommand) {
   getWindow()?.webContents.send('player:command', command)
 }

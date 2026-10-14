@@ -53,8 +53,8 @@ export interface PlaybackReport {
   isPlaying: boolean
 }
 
-export type PlayerCommand = 'toggle' | 'next' | 'previous'
-export type TrayCommand = PlayerCommand | 'show' | 'quit'
+export type PlayerCommand = 'toggle' | 'next' | 'previous' | 'volumeUp' | 'volumeDown' | 'mute'
+export type TrayCommand = 'toggle' | 'next' | 'previous' | 'show' | 'quit'
 
 export type LibraryLayout = 'grid' | 'list'
 export type LibraryFilter = 'all' | 'music' | 'videos'

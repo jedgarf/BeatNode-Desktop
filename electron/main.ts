@@ -7,7 +7,7 @@ import { AUDIO_EXTENSIONS, VIDEO_EXTENSIONS } from '../src/shared/types'
 import { COVER_FILE_PATTERN, MEDIA_SCHEME, coversDir, fromMediaUrl, isGranted, isSupportedMedia, readTrack, restoreTrack } from './library'
 import { isIgnoredPath, registerFolderIpc, unexclude } from './folders'
 import { getSettings } from './settings'
-import { destroyPopover, markQuitting, registerBackgroundIpc, shouldHideOnClose } from './background'
+import { destroyPopover, markQuitting, registerBackgroundIpc, sendPlayerCommand, shouldHideOnClose } from './background'
 import { closeDb, loadPlaylists, loadTracks, savePlaylists, saveTracks } from './db'
 import { sanitizePlaylists } from './playlists'
 import { registerSyncIpc } from './sync'
@@ -16,7 +16,7 @@ import { registerSessionIpc } from './session'
 import { withByteRanges } from './byteRanges'
 import { closeSystemVolume, registerSystemVolumeIpc } from './systemVolume'
 import { registerArtworkIpc } from './artwork'
-import type { Playlist, Track } from '../src/shared/types'
+import type { PlayerCommand, Playlist, Track } from '../src/shared/types'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -222,7 +222,7 @@ function showAbout() {
   else void dialog.showMessageBox(options)
 }
 
-// windows/linux only get File > About and Exit, mac keeps the bare roles so copy/paste still work
+// only what the app uses. the accelerators avoid plain arrows and space so text fields keep them
 function buildMenu() {
   app.setAboutPanelOptions({
     applicationName: 'BeatNode',
@@ -232,30 +232,59 @@ function buildMenu() {
     copyright: `© ${new Date().getFullYear()} BeatNode`,
     iconPath: path.join(process.env.VITE_PUBLIC, 'beatnode.png'),
   })
-  const template: Electron.MenuItemConstructorOptions[] =
-    process.platform === 'darwin'
-      ? [
-          {
-            label: 'BeatNode',
-            submenu: [
-              { role: 'about', label: 'About BeatNode' },
-              { type: 'separator' },
-              { role: 'hide', label: 'Hide BeatNode' },
-              { role: 'hideOthers' },
-              { role: 'unhide' },
-              { type: 'separator' },
-              { role: 'quit', label: 'Quit BeatNode' },
-            ],
-          },
-          { role: 'editMenu' },
-          { role: 'windowMenu' },
-        ]
-      : [
-          {
-            label: 'File',
-            submenu: [{ label: 'About BeatNode', click: showAbout }, { type: 'separator' }, { label: 'Exit', click: () => app.quit() }],
-          },
-        ]
+  const mac = process.platform === 'darwin'
+  const play = (label: string, command: PlayerCommand, accelerator?: string): Electron.MenuItemConstructorOptions => ({
+    label,
+    accelerator,
+    click: () => sendPlayerCommand(command),
+  })
+
+  const edit: Electron.MenuItemConstructorOptions = {
+    label: 'Edit',
+    submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'selectAll' }],
+  }
+  const playback: Electron.MenuItemConstructorOptions = {
+    label: 'Playback',
+    submenu: [
+      play('Play / Pause', 'toggle'),
+      play('Next', 'next', 'Alt+CmdOrCtrl+Right'),
+      play('Previous', 'previous', 'Alt+CmdOrCtrl+Left'),
+      { type: 'separator' },
+      play('Volume Up', 'volumeUp', 'Alt+CmdOrCtrl+Up'),
+      play('Volume Down', 'volumeDown', 'Alt+CmdOrCtrl+Down'),
+      play('Mute', 'mute'),
+    ],
+  }
+  // reload and devtools only while developing
+  const view: Electron.MenuItemConstructorOptions[] = VITE_DEV_SERVER_URL
+    ? [{ label: 'View', submenu: [{ role: 'reload' }, { role: 'toggleDevTools' }] }]
+    : []
+
+  const template: Electron.MenuItemConstructorOptions[] = mac
+    ? [
+        {
+          label: 'BeatNode',
+          submenu: [
+            { role: 'about', label: 'About BeatNode' },
+            { type: 'separator' },
+            { role: 'hide', label: 'Hide BeatNode' },
+            { role: 'hideOthers' },
+            { role: 'unhide' },
+            { type: 'separator' },
+            { role: 'quit', label: 'Quit BeatNode' },
+          ],
+        },
+        edit,
+        playback,
+        ...view,
+        { label: 'Window', submenu: [{ role: 'minimize' }, { role: 'zoom' }, { type: 'separator' }, { role: 'close' }] },
+      ]
+    : [
+        { label: 'File', submenu: [{ label: 'About BeatNode', click: showAbout }, { type: 'separator' }, { label: 'Exit', click: () => app.quit() }] },
+        edit,
+        playback,
+        ...view,
+      ]
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 }
 

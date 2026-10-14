@@ -24,7 +24,9 @@ export function usePlayerBridge(): void {
       const state = usePlayerStore.getState()
       if (command === 'toggle') state.togglePlay()
       else if (command === 'next') state.next()
-      else state.previous()
+      else if (command === 'previous') state.previous()
+      else if (command === 'mute') state.toggleMute()
+      else state.setVolume(state.volume + (command === 'volumeUp' ? 0.1 : -0.1))
     })
 
     return () => {
