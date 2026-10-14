@@ -48,6 +48,7 @@ const beatnode: BeatNodeApi = {
   sendTrayCommand: (command) => ipcRenderer.send('tray:command', command),
   getBackgroundPlayback: () => ipcRenderer.invoke('background:get'),
   setBackgroundPlayback: (enabled) => ipcRenderer.invoke('background:set', enabled),
+  getAppInfo: () => ipcRenderer.invoke('app:info'),
   getLyrics: (request) => ipcRenderer.invoke('lyrics:get', request),
   getOnlineLyrics: () => ipcRenderer.invoke('onlineLyrics:get'),
   setOnlineLyrics: (enabled) => ipcRenderer.invoke('onlineLyrics:set', enabled),

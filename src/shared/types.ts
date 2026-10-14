@@ -115,6 +115,7 @@ export interface BeatNodeApi {
   sendTrayCommand(command: TrayCommand): void
   getBackgroundPlayback(): Promise<boolean>
   setBackgroundPlayback(enabled: boolean): Promise<void>
+  getAppInfo(): Promise<{ version: string }>
   getLyrics(request: LyricsRequest): Promise<LyricsResult | null>
   getOnlineLyrics(): Promise<boolean>
   setOnlineLyrics(enabled: boolean): Promise<void>

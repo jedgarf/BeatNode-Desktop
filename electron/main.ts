@@ -129,6 +129,8 @@ function registerIpc() {
     saveTracks(tracks.filter((t): t is Track => typeof t?.path === 'string' && isGranted(t.path)))
   })
 
+  ipcMain.handle('app:info', () => ({ version: app.getVersion() }))
+
   ipcMain.handle('playlists:load', (): Playlist[] => loadPlaylists())
 
   ipcMain.handle('playlists:save', (_event, playlists: unknown) => {
@@ -211,31 +213,38 @@ app.on('before-quit', () => {
   closeSystemVolume()
 })
 
-const ABOUT_DETAIL = 'Your music and videos, in one place.'
+let aboutWin: BrowserWindow | null = null
 
+// our own small window, the native alert left-aligns everything
 function showAbout() {
-  const options = {
-    type: 'none' as const,
-    title: 'About BeatNode',
-    message: `BeatNode ${app.getVersion()}`,
-    detail: `${ABOUT_DETAIL}\n\n© ${new Date().getFullYear()} BeatNode`,
-    icon: path.join(process.env.VITE_PUBLIC, 'beatnode.png'),
-    buttons: ['OK'],
+  if (aboutWin && !aboutWin.isDestroyed()) {
+    aboutWin.focus()
+    return
   }
-  if (win) void dialog.showMessageBox(win, options)
-  else void dialog.showMessageBox(options)
+  aboutWin = new BrowserWindow({
+    width: 340,
+    height: 360,
+    title: 'About BeatNode',
+    resizable: false,
+    minimizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    show: false,
+    center: true,
+    backgroundColor: nativeTheme.shouldUseDarkColors ? '#0a0a0f' : '#f4f4f9',
+    webPreferences: { preload: path.join(__dirname, 'preload.mjs'), devTools: Boolean(VITE_DEV_SERVER_URL) },
+  })
+  aboutWin.setMenuBarVisibility(false)
+  aboutWin.once('ready-to-show', () => aboutWin?.show())
+  aboutWin.on('closed', () => {
+    aboutWin = null
+  })
+  if (VITE_DEV_SERVER_URL) void aboutWin.loadURL(`${VITE_DEV_SERVER_URL}#about`)
+  else void aboutWin.loadFile(path.join(RENDERER_DIST, 'index.html'), { hash: 'about' })
 }
 
 // only what the app uses. the accelerators avoid plain arrows and space so text fields keep them
 function buildMenu() {
-  app.setAboutPanelOptions({
-    applicationName: 'BeatNode',
-    applicationVersion: app.getVersion(),
-    version: '',
-    credits: ABOUT_DETAIL,
-    copyright: `© ${new Date().getFullYear()} BeatNode`,
-    iconPath: path.join(process.env.VITE_PUBLIC, 'beatnode.png'),
-  })
   const mac = process.platform === 'darwin'
   const play = (label: string, command: PlayerCommand, accelerator?: string): Electron.MenuItemConstructorOptions => ({
     label,
