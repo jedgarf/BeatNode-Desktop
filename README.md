@@ -48,7 +48,7 @@ BeatNode is open source under the [MIT license](LICENSE). Read it, fork it, lear
 
 ## Getting started
 
-Requirements: Node 18+ and Yarn. `better-sqlite3` is a native module, so you need a working build toolchain the first time (Xcode CLT on macOS, build-essential on Linux, VS Build Tools on Windows).
+Requirements: Node 22+ and Yarn. `better-sqlite3` is a native module, so you need a working build toolchain the first time (Xcode CLT on macOS, build-essential on Linux, VS Build Tools on Windows).
 
 ```bash
 yarn install
