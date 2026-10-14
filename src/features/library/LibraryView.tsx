@@ -183,6 +183,16 @@ export function LibraryView() {
             </div>
           </div>
         )}
+            {/* the column names stay with the header, so a long list still says what each column is */}
+            {layout === 'list' && library.length > 0 && visible.length > 0 && (
+              <div
+                className={`${TRACK_ROW_GRID} text-xs uppercase tracking-wider text-fg/40 ${ease} ${
+                  compact ? 'pb-0 pt-2' : 'border-b border-fg/10 pb-2'
+                }`}
+              >
+                <span className="text-center">#</span><span>Title</span><span>Album</span><span className="text-right">Time</span><span />
+              </div>
+            )}
           </>
         )}
       </StickyHeader>
@@ -201,9 +211,6 @@ export function LibraryView() {
         </div>
       ) : (
         <div>
-          <div className={`${TRACK_ROW_GRID} border-b border-fg/10 pb-2 text-xs uppercase tracking-wider text-fg/40`}>
-            <span className="text-center">#</span><span>Title</span><span>Album</span><span className="text-right">Time</span><span />
-          </div>
           <div className="mt-2">
             {visible.map((track, i) => (
               <TrackRow key={track.id} track={track} index={i} isCurrent={track.id === currentId} isPlaying={isPlaying} onPlay={() => handlePlay(track.id)} />
