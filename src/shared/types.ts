@@ -66,6 +66,12 @@ export interface LibraryPrefs {
   sort: LibrarySort
 }
 
+export interface SessionState {
+  trackId: string
+  position: number
+  queueIds: string[]
+}
+
 export interface SystemVolume {
   volume: number
   muted: boolean
@@ -88,6 +94,9 @@ export interface BeatNodeApi {
   sendTrayCommand(command: TrayCommand): void
   getBackgroundPlayback(): Promise<boolean>
   setBackgroundPlayback(enabled: boolean): Promise<void>
+  getSession(): Promise<SessionState | null>
+  saveSession(payload: { trackId: string; position: number; queueIds?: string[] }): Promise<void>
+  clearSession(): Promise<void>
   getSystemVolume(): Promise<SystemVolume | null>
   setSystemVolume(patch: Partial<SystemVolume>): Promise<void>
   getLibraryPrefs(): Promise<LibraryPrefs>

@@ -8,6 +8,7 @@ import { HomeView } from './features/library/HomeView'
 import { LibraryView } from './features/library/LibraryView'
 import { useArtwork } from './features/library/useArtwork'
 import { usePersistence } from './features/library/usePersistence'
+import { SessionResume } from './features/player/SessionResume'
 import { useAudioEngine } from './features/player/useAudioEngine'
 import { useSystemVolume } from './features/player/useSystemVolume'
 import { useMediaSession } from './features/player/useMediaSession'
@@ -61,6 +62,7 @@ export default function App() {
         </div>
       </div>
       <PlayerBar />
+      <SessionResume />
     </div>
   )
 }

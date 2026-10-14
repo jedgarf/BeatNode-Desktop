@@ -12,6 +12,7 @@ import { closeDb, loadPlaylists, loadTracks, savePlaylists, saveTracks } from '.
 import { sanitizePlaylists } from './playlists'
 import { registerSyncIpc } from './sync'
 import { registerPrefsIpc } from './prefs'
+import { registerSessionIpc } from './session'
 import { withByteRanges } from './byteRanges'
 import { closeSystemVolume, registerSystemVolumeIpc } from './systemVolume'
 import { registerArtworkIpc } from './artwork'
@@ -110,6 +111,7 @@ function registerIpc() {
   registerFolderIpc(() => win)
   registerSyncIpc(() => win)
   registerPrefsIpc()
+  registerSessionIpc()
   registerSystemVolumeIpc()
   registerArtworkIpc()
 

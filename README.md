@@ -50,6 +50,7 @@ The installers are not code signed yet, so your OS will warn you the first time:
 - Volume slider and mute follow the computer's master volume, volume keys included. Falls back to app-only volume if the system volume can't be read
 - Playlist sync through a plain folder, with last-edit-wins merging
 - Keeps playing in the tray when you close the window
+- Offers to continue where you left off the next time you open the app
 - System media keys and Now Playing integration
 - Light, dark or follow-system theme
 
