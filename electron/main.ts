@@ -265,7 +265,8 @@ function buildMenu() {
         {
           label: 'BeatNode',
           submenu: [
-            { role: 'about', label: 'About BeatNode' },
+            // our own dialog, the stock panel reads the bundle icon which dev builds get wrong
+            { label: 'About BeatNode', click: showAbout },
             { type: 'separator' },
             { role: 'hide', label: 'Hide BeatNode' },
             { role: 'hideOthers' },

@@ -3,7 +3,7 @@
 // safe to run on every start
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -49,5 +49,18 @@ if (existsSync(source) && existsSync(target)) {
     copyFileSync(icns, target)
     writeFileSync(marker, digest)
     rmSync(work, { recursive: true, force: true })
+    // macOS keeps icons and names per bundle, nudge it to read them again
+    const app = path.join(bundle, '..')
+    const now = new Date()
+    utimesSync(app, now, now)
+    try {
+      execFileSync(
+        '/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister',
+        ['-f', app],
+        { stdio: 'ignore' },
+      )
+    } catch {
+      // cosmetic only
+    }
   }
 }
