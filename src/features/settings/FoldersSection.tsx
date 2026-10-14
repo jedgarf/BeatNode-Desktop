@@ -63,11 +63,11 @@ export function FoldersSection() {
         </button>
         <button
           type="button"
-          disabled={busy || scanning || folders.length === 0}
+          disabled={busy || folders.length === 0}
           onClick={() => run(() => window.beatnode.rescanFolders())}
           className="rounded-full px-4 py-2 text-sm text-fg/70 ring-1 ring-fg/10 transition hover:text-fg disabled:opacity-40"
         >
-          Rescan now
+          {scanning ? 'Scanning…' : 'Rescan now'}
         </button>
       </div>
     </section>

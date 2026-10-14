@@ -4,6 +4,20 @@ import type { Track } from '../../shared/types'
 
 export type RepeatMode = 'off' | 'all' | 'one'
 
+// same song at another path: same tags and nearly the same length
+function withoutDuplicates(existing: Track[], incoming: Track[]): Track[] {
+  const seen = new Map<string, number[]>()
+  const bucket = (t: Track) => `${t.kind}:${t.key}`
+  const isSeen = (t: Track) => seen.get(bucket(t))?.some((d) => Math.abs(d - t.duration) < 1) ?? false
+  const remember = (t: Track) => seen.set(bucket(t), [...(seen.get(bucket(t)) ?? []), t.duration])
+  existing.forEach(remember)
+  return incoming.filter((t) => {
+    if (isSeen(t)) return false
+    remember(t)
+    return true
+  })
+}
+
 interface PlayerState {
   library: Track[]
   queue: Track[]
@@ -79,14 +93,15 @@ export const usePlayerStore = create<PlayerState>()(
       addToLibrary: (tracks) =>
         set((state) => {
           const known = new Set(state.library.map((t) => t.id))
-          const fresh = tracks.filter((t) => !known.has(t.id))
+          const fresh = withoutDuplicates(state.library, tracks.filter((t) => !known.has(t.id)))
           return fresh.length ? { library: [...state.library, ...fresh] } : state
         }),
 
       hydrateLibrary: (tracks) =>
         set((state) => {
           const restored = new Set(tracks.map((t) => t.id))
-          return { library: [...tracks, ...state.library.filter((t) => !restored.has(t.id))] }
+          const merged = [...tracks, ...state.library.filter((t) => !restored.has(t.id))]
+          return { library: withoutDuplicates([], merged) }
         }),
 
       setCover: (trackId, cover) =>

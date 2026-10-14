@@ -1,5 +1,6 @@
 import { watch, type FSWatcher } from 'node:fs'
 import { readdir } from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
 import { dialog, ipcMain, type BrowserWindow } from 'electron'
 import type { LibraryChange } from '../src/shared/types'
@@ -31,6 +32,29 @@ function endScan() {
   if (--activeScans === 0) send('folders:scanning', false)
 }
 
+const IGNORED_DIR_NAMES = new Set(['node_modules', '__pycache__', '$RECYCLE.BIN', 'System Volume Information'])
+// app data in the home folder, music is not kept there and it is full of caches and sdk sounds
+const IGNORED_HOME_DIRS = new Set(['Library', 'AppData'])
+const BUNDLE_EXTENSIONS = new Set(['.app', '.framework', '.bundle', '.photoslibrary'])
+
+function isIgnoredDir(dir: string): boolean {
+  const name = path.basename(dir)
+  if (IGNORED_DIR_NAMES.has(name) || BUNDLE_EXTENSIONS.has(path.extname(name).toLowerCase())) return true
+  return IGNORED_HOME_DIRS.has(name) && path.dirname(dir) === os.homedir()
+}
+
+// true when the file sits under a directory the scan skips, relative to the watched folder
+export function isIgnoredPath(root: string, filePath: string): boolean {
+  const relative = path.relative(root, path.dirname(filePath))
+  if (relative.startsWith('..') || path.isAbsolute(relative)) return false
+  let dir = root
+  for (const segment of relative.split(path.sep).filter(Boolean)) {
+    dir = path.join(dir, segment)
+    if (isIgnoredDir(dir)) return true
+  }
+  return false
+}
+
 async function walk(dir: string, out: string[] = []): Promise<string[]> {
   let entries
   try {
@@ -41,7 +65,9 @@ async function walk(dir: string, out: string[] = []): Promise<string[]> {
   for (const entry of entries) {
     if (entry.name.startsWith('.')) continue
     const full = path.join(dir, entry.name)
-    if (entry.isDirectory()) await walk(full, out)
+    if (entry.isDirectory()) {
+      if (!isIgnoredDir(full)) await walk(full, out)
+    }
     else if (entry.isFile() && isSupportedMedia(full)) out.push(path.normalize(full))
   }
   return out
@@ -115,7 +141,16 @@ function startWatching(folder: string): Promise<void> {
   }
   if (!state.watcher) {
     try {
-      state.watcher = watch(folder, { recursive: true, persistent: false }, () => scheduleScan(folder))
+      state.watcher = watch(folder, { recursive: true, persistent: false }, (_event, filename) => {
+        // a busy folder like home fires constantly, only media files and directories matter
+        if (filename) {
+          const name = filename.toString()
+          const ext = path.extname(name)
+          if (ext !== '' && !isSupportedMedia(name)) return
+          if (isIgnoredPath(folder, path.join(folder, name))) return
+        }
+        scheduleScan(folder)
+      })
       state.watcher.on('error', (error) => console.warn(`[folders] watcher error for ${folder}:`, error))
     } catch (error) {
       console.warn(`[folders] cannot watch ${folder}; use "Rescan" instead:`, error)
@@ -173,8 +208,9 @@ export function registerFolderIpc(windowGetter: () => BrowserWindow | null): voi
     return next
   })
 
-  ipcMain.handle('folders:rescan', async () => {
-    await Promise.all([...folders.keys()].map(scan))
+  // progress shows through folders:scanning, so don't hold the button for a long walk
+  ipcMain.handle('folders:rescan', () => {
+    for (const folder of folders.keys()) void scan(folder)
   })
 
   ipcMain.handle('library:exclude', async (_event, filePath: unknown) => {

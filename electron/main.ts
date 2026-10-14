@@ -5,7 +5,8 @@ import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { AUDIO_EXTENSIONS, VIDEO_EXTENSIONS } from '../src/shared/types'
 import { COVER_FILE_PATTERN, MEDIA_SCHEME, coversDir, fromMediaUrl, isGranted, isSupportedMedia, readTrack, restoreTrack } from './library'
-import { registerFolderIpc, unexclude } from './folders'
+import { isIgnoredPath, registerFolderIpc, unexclude } from './folders'
+import { getSettings } from './settings'
 import { markQuitting, registerBackgroundIpc, shouldHideOnClose } from './background'
 import { closeDb, loadPlaylists, loadTracks, savePlaylists, saveTracks } from './db'
 import { sanitizePlaylists } from './playlists'
@@ -110,8 +111,9 @@ function registerIpc() {
   registerArtworkIpc()
 
   ipcMain.handle('library:load', async (): Promise<Track[]> => {
-    const restored = await Promise.all(loadTracks().map(restoreTrack))
-    return restored.filter((t): t is Track => t !== null)
+    const [restored, { folders }] = await Promise.all([Promise.all(loadTracks().map(restoreTrack)), getSettings()])
+    // drops what an older, less picky scan picked up from node_modules, caches and the like
+    return restored.filter((t): t is Track => t !== null && !folders.some((root) => isIgnoredPath(root, t.path)))
   })
 
   ipcMain.handle('library:save', (_event, tracks: unknown) => {
