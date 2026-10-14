@@ -30,7 +30,7 @@ export function PlaylistsView() {
   return (
     <div className="flex min-h-full flex-col">
       <header className="mb-8 flex items-end justify-between gap-4">
-        <PageTitle icon={<PlaylistsIcon size={24} />}>Playlists</PageTitle>
+        <PageTitle icon={<PlaylistsIcon size={32} />}>Playlists</PageTitle>
         <form onSubmit={onCreate} className="flex items-center gap-2">
           <input
             value={newName}

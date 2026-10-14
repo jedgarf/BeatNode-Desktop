@@ -94,7 +94,7 @@ export function LibraryView() {
     <div className="flex min-h-full flex-col">
       <header className="mb-6 flex items-end justify-between gap-4">
         <div>
-          <PageTitle icon={<LibraryIcon size={24} />}>Library</PageTitle>
+          <PageTitle icon={<LibraryIcon size={32} />}>Library</PageTitle>
           <p className="mt-1 text-sm text-fg/50">{totals.music} {totals.music === 1 ? 'song' : 'songs'} · {totals.videos} {totals.videos === 1 ? 'video' : 'videos'}</p>
         </div>
         <div className="flex items-center gap-2">

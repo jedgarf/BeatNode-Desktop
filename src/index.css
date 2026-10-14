@@ -50,7 +50,15 @@
   --animate-vinyl: spin 4s linear infinite;
   --animate-breathe: breathe 9s ease-in-out infinite;
   --animate-eq: eq 0.9s ease-in-out infinite alternate;
-  --animate-sun-spin: sun-spin 28s linear infinite;
+  --animate-sun-spin: sun-spin 22s linear infinite;
+  --animate-drift: drift 9s ease-in-out infinite;
+  --animate-shoot: shoot 7s ease-in infinite;
+  --animate-halo: halo 4.5s ease-in-out infinite;
+  --animate-sun-pulse: sun-pulse 2.6s ease-in-out infinite;
+  --animate-rock: rock 4.5s ease-in-out infinite;
+  --animate-rise: rise 4s ease-in-out infinite;
+  --animate-set: set 4.5s ease-in-out infinite;
+  --animate-spark: spark 1.8s ease-in-out infinite;
   --animate-twinkle: twinkle 2.6s ease-in-out infinite alternate;
   --animate-glow: glow 3.2s ease-in-out infinite;
   --animate-bob: bob 3.6s ease-in-out infinite;
@@ -79,6 +87,39 @@
   }
   @keyframes sun-spin {
     to { transform: rotate(360deg); }
+  }
+  @keyframes sun-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+  @keyframes rock {
+    0%, 100% { transform: rotate(-8deg); }
+    50% { transform: rotate(8deg); }
+  }
+  @keyframes rise {
+    0%, 100% { transform: translateY(8px); }
+    50% { transform: translateY(-1px); }
+  }
+  @keyframes set {
+    0%, 100% { transform: translateY(-1px); }
+    50% { transform: translateY(8px); }
+  }
+  @keyframes drift {
+    0%, 100% { transform: translateX(-3px); }
+    50% { transform: translateX(4px); }
+  }
+  @keyframes shoot {
+    0%, 70% { opacity: 0; transform: translate(0, 0); }
+    74% { opacity: 1; }
+    90%, 100% { opacity: 0; transform: translate(-16px, 11px); }
+  }
+  @keyframes halo {
+    0%, 100% { opacity: 0.55; transform: scale(0.94); }
+    50% { opacity: 1; transform: scale(1.08); }
+  }
+  @keyframes spark {
+    0%, 100% { opacity: 0.35; transform: scale(0.7); }
+    50% { opacity: 1; transform: scale(1.15); }
   }
   @keyframes twinkle {
     from { opacity: 0.25; }
