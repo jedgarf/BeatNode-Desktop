@@ -1,6 +1,6 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, net, protocol } from 'electron'
 import { fileURLToPath } from 'node:url'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { AUDIO_EXTENSIONS, VIDEO_EXTENSIONS } from '../src/shared/types'
@@ -12,6 +12,7 @@ import { closeDb, loadPlaylists, loadTracks, savePlaylists, saveTracks } from '.
 import { sanitizePlaylists } from './playlists'
 import { registerSyncIpc } from './sync'
 import { registerPrefsIpc } from './prefs'
+import { withByteRanges } from './byteRanges'
 import { closeSystemVolume, registerSystemVolumeIpc } from './systemVolume'
 import { registerArtworkIpc } from './artwork'
 import type { Playlist, Track } from '../src/shared/types'
@@ -66,12 +67,14 @@ function registerMediaProtocol() {
     if (!isGranted(filePath) || !isSupportedMedia(filePath)) {
       return new Response('Forbidden', { status: 403 })
     }
-    return withCors(
-      await net.fetch(pathToFileURL(filePath).toString(), {
+    const [{ size }, fetched] = await Promise.all([
+      stat(filePath),
+      net.fetch(pathToFileURL(filePath).toString(), {
         headers: request.headers,
         bypassCustomProtocolHandlers: true,
       }),
-    )
+    ])
+    return withCors(await withByteRanges(fetched, size, request.headers.get('range')))
   })
 }
 
