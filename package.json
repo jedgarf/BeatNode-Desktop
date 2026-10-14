@@ -4,7 +4,7 @@
   "description": "Your music and videos, in one place.",
   "author": "JEFDev",
   "private": true,
-  "version": "1.2.1",
+  "version": "1.2.2",
   "license": "MIT",
   "type": "module",
   "scripts": {
