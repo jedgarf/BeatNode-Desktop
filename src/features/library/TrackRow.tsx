@@ -36,12 +36,12 @@ export function TrackRow({ track, index, isCurrent, isPlaying, onPlay, playlistI
         <CoverArt track={track} className="size-10 shrink-0 rounded-md" />
         <div className="min-w-0">
           <p className={`flex items-center gap-1.5 text-sm font-medium ${isCurrent ? 'text-accent-soft' : 'text-fg'}`}>
-            <span className="truncate">{track.title}</span>
+            <span className="truncate" title={track.title}>{track.title}</span>
           </p>
-          <p className="truncate text-xs text-fg/50">{track.artist}</p>
+          <p className="truncate text-xs text-fg/50" title={track.artist}>{track.artist}</p>
         </div>
       </div>
-      <p className="truncate text-sm text-fg/50">{track.album}</p>
+      <p className="truncate text-sm text-fg/50" title={track.album}>{track.album}</p>
       <p className="text-right text-sm tabular-nums text-fg/50">{formatTime(track.duration)}</p>
       <TrackMenu track={track} playlistId={playlistId} className="opacity-0 transition focus-within:opacity-100 group-hover:opacity-100" />
     </div>

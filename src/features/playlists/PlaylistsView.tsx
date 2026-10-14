@@ -65,7 +65,7 @@ export function PlaylistsView() {
                 className="rounded-2xl bg-fg/[0.03] p-3 text-left ring-1 ring-fg/5 transition hover:-translate-y-0.5 hover:bg-fg/[0.07] hover:ring-fg/10"
               >
                 <CoverArt track={first ?? { id: p.id, cover: null, title: p.name }} className="w-full rounded-xl shadow-lg shadow-black/40" />
-                <p className="mt-3 truncate text-sm font-semibold">{p.name}</p>
+                <p className="mt-3 truncate text-sm font-semibold" title={p.name}>{p.name}</p>
                 <p className="text-xs text-fg/50">{p.entries.length} {p.entries.length === 1 ? 'song' : 'songs'}</p>
               </button>
             )

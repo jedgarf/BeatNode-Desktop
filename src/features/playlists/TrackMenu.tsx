@@ -96,6 +96,7 @@ export function TrackMenu({ track, playlistId, className = '' }: TrackMenuProps)
                     role="menuitem"
                     type="button"
                     disabled={already}
+                    title={p.name}
                     onClick={() => { addTrack(p.id, track); close() }}
                     className={`${item} disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent`}
                   >

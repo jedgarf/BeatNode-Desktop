@@ -24,8 +24,8 @@ export function TrayPopover() {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-3 rounded-2xl bg-elevated px-5 text-fg ring-1 ring-fg/10">
       <div className="w-full min-w-0 text-center">
-        <p className="truncate text-sm font-semibold">{state.hasTrack ? state.title : 'Nothing playing'}</p>
-        <p className="truncate text-xs text-fg/50">{state.hasTrack ? state.artist : 'BeatNode'}</p>
+        <p className="truncate text-sm font-semibold" title={state.title}>{state.hasTrack ? state.title : 'Nothing playing'}</p>
+        <p className="truncate text-xs text-fg/50" title={state.artist}>{state.hasTrack ? state.artist : 'BeatNode'}</p>
       </div>
       <div className="flex items-center justify-center gap-3">
         <button type="button" onClick={() => send('previous')} aria-label="Previous" title="Previous" className={`${iconButton} size-10`}>

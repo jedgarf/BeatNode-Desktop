@@ -113,8 +113,8 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
           <ChevronDownIcon size={20} />
         </button>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold">{track?.title ?? 'Nothing playing'}</p>
-          {track && <p className="truncate text-xs text-fg/50">{track.artist}</p>}
+          <p className="truncate text-sm font-semibold" title={track?.title}>{track?.title ?? 'Nothing playing'}</p>
+          {track && <p className="truncate text-xs text-fg/50" title={track.artist}>{track.artist}</p>}
         </div>
         {isVideo && (
           <button
