@@ -65,6 +65,11 @@ export interface LibraryPrefs {
   sort: LibrarySort
 }
 
+export interface SystemVolume {
+  volume: number
+  muted: boolean
+}
+
 export interface BeatNodeApi {
   openAudioFiles(): Promise<Track[]>
   saveCover(trackId: string, dataUrl: string): Promise<string | null>
@@ -80,6 +85,8 @@ export interface BeatNodeApi {
   onPlayerCommand(callback: (command: PlayerCommand) => void): () => void
   getBackgroundPlayback(): Promise<boolean>
   setBackgroundPlayback(enabled: boolean): Promise<void>
+  getSystemVolume(): Promise<SystemVolume | null>
+  setSystemVolume(patch: Partial<SystemVolume>): Promise<void>
   getLibraryPrefs(): Promise<LibraryPrefs>
   setLibraryPrefs(prefs: LibraryPrefs): Promise<void>
 

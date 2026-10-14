@@ -46,6 +46,8 @@ const beatnode: BeatNodeApi = {
   onPlayerCommand: (callback) => subscribe<PlayerCommand>('player:command', callback),
   getBackgroundPlayback: () => ipcRenderer.invoke('background:get'),
   setBackgroundPlayback: (enabled) => ipcRenderer.invoke('background:set', enabled),
+  getSystemVolume: () => ipcRenderer.invoke('systemVolume:get'),
+  setSystemVolume: (patch) => ipcRenderer.invoke('systemVolume:set', patch),
   getLibraryPrefs: () => ipcRenderer.invoke('libraryPrefs:get'),
   setLibraryPrefs: (prefs) => ipcRenderer.invoke('libraryPrefs:set', prefs),
 

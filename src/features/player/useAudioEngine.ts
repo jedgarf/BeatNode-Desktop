@@ -17,9 +17,10 @@ export function useAudioEngine(): void {
     }
 
     const applyVolume = () => {
-      const { volume, muted } = store.getState()
-      audio.volume = volume
-      audio.muted = muted
+      const { volume, muted, systemVolume } = store.getState()
+      // when the system volume is in charge, the element stays at full so it isn't attenuated twice
+      audio.volume = systemVolume ? 1 : volume
+      audio.muted = systemVolume ? false : muted
     }
     applyVolume()
 
@@ -85,8 +86,7 @@ export function useAudioEngine(): void {
         state._clearSeek()
       }
 
-      audio.volume = state.volume
-      audio.muted = state.muted
+      applyVolume()
     })
 
     return () => {

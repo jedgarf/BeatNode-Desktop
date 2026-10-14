@@ -47,6 +47,7 @@ The installers are not code signed yet, so your OS will warn you the first time:
 - Optional online artwork lookup for songs with no cover: title and artist are sent to the iTunes catalog, nothing else. On by default, switch it off in Settings
 - Playlists with per-track menu
 - Shuffle, repeat (off / all / one), volume, seek
+- Volume slider and mute follow the computer's master volume, volume keys included. Falls back to app-only volume if the system volume can't be read
 - Playlist sync through a plain folder, with last-edit-wins merging
 - Keeps playing in the tray when you close the window
 - System media keys and Now Playing integration

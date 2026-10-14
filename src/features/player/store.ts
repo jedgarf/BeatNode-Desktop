@@ -15,6 +15,8 @@ interface PlayerState {
   duration: number
   volume: number
   muted: boolean
+  // true while the volume mirrors the computer's master volume
+  systemVolume: boolean
   repeat: RepeatMode
   shuffle: boolean
   // bumped on every track pick so the engine reloads even if the src is the same
@@ -68,6 +70,7 @@ export const usePlayerStore = create<PlayerState>()(
       duration: 0,
       volume: 0.8,
       muted: false,
+      systemVolume: false,
       repeat: 'off',
       shuffle: false,
       loadToken: 0,

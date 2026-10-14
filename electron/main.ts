@@ -11,6 +11,7 @@ import { closeDb, loadPlaylists, loadTracks, savePlaylists, saveTracks } from '.
 import { sanitizePlaylists } from './playlists'
 import { registerSyncIpc } from './sync'
 import { registerPrefsIpc } from './prefs'
+import { closeSystemVolume, registerSystemVolumeIpc } from './systemVolume'
 import { registerArtworkIpc } from './artwork'
 import type { Playlist, Track } from '../src/shared/types'
 
@@ -105,6 +106,7 @@ function registerIpc() {
   registerFolderIpc(() => win)
   registerSyncIpc(() => win)
   registerPrefsIpc()
+  registerSystemVolumeIpc()
   registerArtworkIpc()
 
   ipcMain.handle('library:load', async (): Promise<Track[]> => {
@@ -194,6 +196,7 @@ function showMainWindow() {
 app.on('before-quit', () => {
   markQuitting()
   closeDb()
+  closeSystemVolume()
 })
 
 const ABOUT_DETAIL = 'Your music and videos, in one place.'

@@ -8,6 +8,7 @@ import { LibraryView } from './features/library/LibraryView'
 import { useArtwork } from './features/library/useArtwork'
 import { usePersistence } from './features/library/usePersistence'
 import { useAudioEngine } from './features/player/useAudioEngine'
+import { useSystemVolume } from './features/player/useSystemVolume'
 import { useMediaSession } from './features/player/useMediaSession'
 import { usePlayerBridge } from './features/player/usePlayerBridge'
 import { usePlayerShortcuts } from './features/player/usePlayerShortcuts'
@@ -31,6 +32,7 @@ export default function App() {
   useArtwork()
   useAutoOpenForVideo()
   useAudioEngine()
+  useSystemVolume()
   useMediaSession()
   usePlayerBridge()
   usePlayerShortcuts()
