@@ -1,6 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { CoverArt } from '../../components/ui/CoverArt'
 import { PlaylistsIcon } from '../../components/ui/icons'
+import { HEADER_EASE, StickyHeader } from '../../components/layout/StickyHeader'
 import { PageTitle } from '../../components/ui/PageTitle'
 import { TrackRow, TRACK_ROW_GRID } from '../library/TrackRow'
 import { selectCurrentTrack, usePlayerStore } from '../player/store'
@@ -29,27 +30,31 @@ export function PlaylistsView() {
 
   return (
     <div className="flex min-h-full flex-col">
-      <header className="mb-8 flex items-end justify-between gap-4">
-        <PageTitle icon={<PlaylistsIcon size={32} />}>Playlists</PageTitle>
-        <form onSubmit={onCreate} className="flex items-center gap-2">
-          <input
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            placeholder="New playlist name"
-            maxLength={60}
-            aria-label="New playlist name"
-            className="w-56 rounded-full bg-fg/5 px-4 py-2 text-sm outline-none ring-1 ring-fg/10 placeholder:text-fg/30 focus:ring-accent-soft"
-          />
-          <button
-            type="submit"
-            disabled={!newName.trim()}
-            className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-accent-glow transition hover:bg-accent-soft disabled:opacity-50"
-          >
-            Create
-          </button>
-        </form>
-      </header>
-
+      <StickyHeader>
+        {(compact) => (
+          <header className={`flex items-end justify-between gap-4 ${HEADER_EASE} ${compact ? 'mb-0' : 'mb-8'}`}>
+            <PageTitle compact={compact} icon={<PlaylistsIcon />}>Playlists</PageTitle>
+            <form onSubmit={onCreate} className="flex items-center gap-2">
+              <input
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="New playlist name"
+                maxLength={60}
+                aria-label="New playlist name"
+                title="Name for a new playlist"
+                className={`rounded-full bg-fg/5 outline-none ring-1 ring-fg/10 placeholder:text-fg/30 focus:ring-accent-soft ${HEADER_EASE} ${compact ? 'w-44 px-3 py-1 text-xs' : 'w-56 px-4 py-2 text-sm'}`}
+              />
+              <button
+                type="submit"
+                disabled={!newName.trim()}
+                className={`rounded-full bg-accent font-semibold text-white shadow-lg shadow-accent-glow hover:bg-accent-soft disabled:opacity-50 ${HEADER_EASE} ${compact ? 'px-3 py-1 text-xs' : 'px-4 py-2 text-sm'}`}
+              >
+                Create
+              </button>
+            </form>
+          </header>
+        )}
+      </StickyHeader>
       {playlists.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 py-24 text-center">
           <h2 className="text-xl font-semibold">No playlists yet</h2>

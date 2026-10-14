@@ -169,7 +169,7 @@ const CHECK_EVERY_MS = 20_000
 const FADE_MS = 500
 
 // follows the clock, and crossfades when the time of day rolls over
-export function Greeting({ className = '' }: { className?: string }) {
+export function Greeting({ className = '', compact = false }: { className?: string; compact?: boolean }) {
   const [period, setPeriod] = useState<Period>(() => periodFor(new Date()))
   const [leaving, setLeaving] = useState<Period | null>(null)
   const [changed, setChanged] = useState(false)
@@ -200,14 +200,18 @@ export function Greeting({ className = '' }: { className?: string }) {
   const shown: Period[] = leaving && leaving !== period ? [leaving, period] : [period]
 
   return (
-    <h1 className={`grid text-3xl font-bold tracking-tight ${className}`}>
+    <h1
+      className={`grid font-bold tracking-tight transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        compact ? 'text-xl [&_svg]:size-9' : 'text-3xl [&_svg]:size-[52px]'
+      } [&_svg]:transition-all [&_svg]:duration-300 ${className}`}
+    >
       {shown.map((p) => {
         const isLeaving = p === leaving && p !== period
         return (
           <span
             key={p}
             aria-hidden={isLeaving || undefined}
-            className={`col-start-1 row-start-1 flex items-center gap-4 ${isLeaving ? 'animate-greet-out' : changed ? 'animate-greet-in' : ''}`}
+            className={`col-start-1 row-start-1 flex items-center transition-all duration-300 ${compact ? 'gap-3' : 'gap-4'} ${isLeaving ? 'animate-greet-out' : changed ? 'animate-greet-in' : ''}`}
           >
             {PERIODS[p].icon}
             {PERIODS[p].text}

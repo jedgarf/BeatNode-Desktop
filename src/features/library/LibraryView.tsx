@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { LibraryFilter, LibraryLayout, LibrarySort, Track } from '../../shared/types'
 import { LibraryIcon, PlusIcon } from '../../components/ui/icons'
+import { HEADER_EASE, StickyHeader } from '../../components/layout/StickyHeader'
 import { PageTitle } from '../../components/ui/PageTitle'
 import { selectCurrentTrack, usePlayerStore } from '../player/store'
 import { EmptyLibrary } from './EmptyLibrary'
@@ -90,81 +91,101 @@ export function LibraryView() {
   // visible list is the queue, so next/prev stay in the current tab
   const handlePlay = (id: string) => (id === currentId ? togglePlay() : playTrack(id, visible))
 
+  const subtitle = `${totals.music} ${totals.music === 1 ? 'song' : 'songs'} · ${totals.videos} ${totals.videos === 1 ? 'video' : 'videos'}`
+
+  const ease = HEADER_EASE
+
   return (
     <div className="flex min-h-full flex-col">
-      <header className="mb-6 flex items-end justify-between gap-4">
-        <div>
-          <PageTitle icon={<LibraryIcon size={32} />}>Library</PageTitle>
-          <p className="mt-1 text-sm text-fg/50">{totals.music} {totals.music === 1 ? 'song' : 'songs'} · {totals.videos} {totals.videos === 1 ? 'video' : 'videos'}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex rounded-full bg-fg/5 p-1 ring-1 ring-fg/10" role="group" aria-label="Layout">
-            {(['grid', 'list'] as const).map((mode) => (
-              <button
-                key={mode}
-                type="button"
-                onClick={() => setLayout(mode)}
-                aria-pressed={layout === mode}
-                aria-label={`${mode} view`} title={`${mode} view`}
-                className={`rounded-full px-3 py-1 text-sm transition ${layout === mode ? 'bg-fg/15 text-fg' : 'text-fg/50 hover:text-fg'}`}
-              >
-                {mode === 'grid' ? 'Grid' : 'List'}
-              </button>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={importTracks}
-            disabled={isImporting}
-            className="flex items-center gap-2 rounded-full bg-accent py-2 pl-3.5 pr-4 text-sm font-semibold text-white shadow-lg shadow-accent-glow transition hover:bg-accent-soft disabled:opacity-60"
-          >
-            {isImporting
-              ? <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-              : <PlusIcon size={18} />}
-            {isImporting ? 'Importing…' : 'Add media'}
-          </button>
-        </div>
-      </header>
-
-      {library.length > 0 && (
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex gap-2" role="tablist" aria-label="Media type">
-            {FILTERS.map(({ id, label }) => (
-              <button
-                key={id}
-                type="button"
-                role="tab"
-                aria-selected={filter === id}
-                onClick={() => setFilter(id)}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${filter === id ? 'bg-fg text-base' : 'bg-fg/5 text-fg/70 hover:bg-fg/10 hover:text-fg'}`}
-              >
-                {label} <span className="ml-1 text-xs opacity-60">{counts[id]}</span>
-              </button>
-            ))}
+      <StickyHeader>
+        {(compact) => (
+          <>
+        <header className={`flex items-end justify-between gap-4 ${ease} ${compact ? 'mb-2' : 'mb-6'}`}>
+          <div className="min-w-0">
+            <PageTitle compact={compact} icon={<LibraryIcon />}>Library</PageTitle>
+            <div className={`grid ${ease} ${compact ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] opacity-100'}`}>
+              <p className="overflow-hidden text-sm text-fg/50">
+                <span className="block pt-1">{subtitle}</span>
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Escape' && setQuery('')}
-              placeholder="Search title, artist, album"
-              aria-label="Search library"
-              className="w-64 rounded-full bg-fg/5 px-4 py-1.5 text-sm ring-1 ring-fg/10 outline-none transition placeholder:text-fg/40 focus:ring-accent"
-            />
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as SortKey)}
-              aria-label="Sort by"
-              className="rounded-full bg-fg/5 px-3 py-1.5 text-sm text-fg/70 ring-1 ring-fg/10 outline-none transition focus:ring-accent"
-            >
-              {SORTS.map(({ id, label }) => (
-                <option key={id} value={id}>{label}</option>
+            <div className="flex rounded-full bg-fg/5 p-1 ring-1 ring-fg/10" role="group" aria-label="Layout">
+              {(['grid', 'list'] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setLayout(mode)}
+                  aria-pressed={layout === mode}
+                  aria-label={`${mode} view`}
+                  title={`${mode} view`}
+                  className={`rounded-full ${ease} ${compact ? 'px-2.5 py-0.5 text-xs' : 'px-3 py-1 text-sm'} ${layout === mode ? 'bg-fg/15 text-fg' : 'text-fg/50 hover:text-fg'}`}
+                >
+                  {mode === 'grid' ? 'Grid' : 'List'}
+                </button>
               ))}
-            </select>
+            </div>
+            <button
+              type="button"
+              onClick={importTracks}
+              disabled={isImporting}
+              aria-label="Add media"
+              title={isImporting ? 'Importing…' : 'Add media'}
+              className={`flex items-center rounded-full bg-accent font-semibold text-white shadow-lg shadow-accent-glow hover:bg-accent-soft disabled:opacity-60 ${ease} ${compact ? 'h-8 px-2.5 text-xs' : 'h-10 px-3.5 text-sm'}`}
+            >
+              {isImporting ? <span className="size-4 shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white" /> : <PlusIcon size={18} />}
+              {/* the word folds away when compact, the tooltip still names it */}
+              <span className={`overflow-hidden whitespace-nowrap ${ease} ${compact ? 'ml-0 max-w-0 opacity-0' : 'ml-2 max-w-[8rem] opacity-100'}`}>
+                {isImporting ? 'Importing…' : 'Add media'}
+              </span>
+            </button>
           </div>
-        </div>
-      )}
+        </header>
+
+        {library.length > 0 && (
+          <div className={`flex flex-wrap items-center justify-between gap-3 ${ease} ${compact ? 'mb-0' : 'mb-5'}`}>
+            <div className="flex gap-2" role="tablist" aria-label="Media type">
+              {FILTERS.map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={filter === id}
+                  onClick={() => setFilter(id)}
+                  className={`rounded-full font-medium ${ease} ${compact ? 'px-3 py-1 text-xs' : 'px-4 py-1.5 text-sm'} ${filter === id ? 'bg-fg text-base' : 'bg-fg/5 text-fg/70 hover:bg-fg/10 hover:text-fg'}`}
+                >
+                  {label} <span className="ml-1 text-xs opacity-60">{counts[id]}</span>
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Escape' && setQuery('')}
+                placeholder="Search title, artist, album"
+                aria-label="Search library"
+                title="Search title, artist or album"
+                className={`rounded-full bg-fg/5 ring-1 ring-fg/10 outline-none placeholder:text-fg/40 focus:ring-accent ${ease} ${compact ? 'w-52 px-3 py-1 text-xs' : 'w-64 px-4 py-1.5 text-sm'}`}
+              />
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortKey)}
+                aria-label="Sort by"
+                title="Sort by"
+                className={`rounded-full bg-fg/5 text-fg/70 ring-1 ring-fg/10 outline-none focus:ring-accent ${ease} ${compact ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-sm'}`}
+              >
+                {SORTS.map(({ id, label }) => (
+                  <option key={id} value={id}>{label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+          </>
+        )}
+      </StickyHeader>
 
       {library.length === 0 ? (
         <EmptyLibrary />

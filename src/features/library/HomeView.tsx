@@ -1,3 +1,4 @@
+import { StickyHeader } from '../../components/layout/StickyHeader'
 import { Greeting } from '../../components/ui/Greeting'
 import { selectCurrentTrack, usePlayerStore } from '../player/store'
 import { EmptyLibrary } from './EmptyLibrary'
@@ -14,7 +15,7 @@ export function HomeView() {
 
   return (
     <div className="flex min-h-full flex-col">
-      <Greeting className="mb-8" />
+      <StickyHeader>{(compact) => <Greeting compact={compact} className={compact ? 'mb-0' : 'mb-8'} />}</StickyHeader>
       {recent.length === 0 ? (
         <EmptyLibrary />
       ) : (

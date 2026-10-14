@@ -1,3 +1,4 @@
+import { StickyHeader } from '../../components/layout/StickyHeader'
 import { SettingsIcon } from '../../components/ui/icons'
 import { PageTitle } from '../../components/ui/PageTitle'
 import { ArtworkSection } from './ArtworkSection'
@@ -27,7 +28,13 @@ export function SettingsView() {
   const setMode = useThemeStore((s) => s.setMode)
   return (
     <div>
-      <PageTitle icon={<SettingsIcon size={32} />} className="mb-8">Settings</PageTitle>
+      <StickyHeader>
+        {(compact) => (
+          <PageTitle compact={compact} icon={<SettingsIcon />} className={compact ? 'mb-0' : 'mb-8'}>
+            Settings
+          </PageTitle>
+        )}
+      </StickyHeader>
       <section className="mb-6 rounded-2xl bg-fg/[0.04] p-5 ring-1 ring-fg/10">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-fg/50">Appearance</h2>
         <div role="radiogroup" aria-label="Theme" className="grid grid-cols-3 gap-2">
