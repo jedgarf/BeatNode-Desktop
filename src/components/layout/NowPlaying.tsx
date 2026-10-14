@@ -223,8 +223,8 @@ function Record({ track, spinning }: { track: Track | null; spinning: boolean })
         </div>
         <div className="vinyl-sheen pointer-events-none absolute inset-0 rounded-full" />
       </div>
-      <div key={track?.id} className="relative h-full animate-fade-up">
-        <CoverArt track={track} className="h-full rounded-2xl shadow-2xl shadow-black/50 ring-1 ring-white/10" />
+      <div key={track?.id} className="absolute inset-y-0 left-0 aspect-square animate-fade-up">
+        <CoverArt track={track} className="size-full rounded-2xl shadow-2xl shadow-black/50 ring-1 ring-white/10" />
       </div>
     </div>
   )
