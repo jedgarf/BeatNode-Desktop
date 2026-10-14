@@ -1,6 +1,7 @@
 import { useState, type ComponentType } from 'react'
 import { NowPlaying } from './components/layout/NowPlaying'
 import { useAutoOpenForVideo } from './components/layout/useAutoOpenForVideo'
+import { useNowPlayingStore } from './features/player/nowPlayingStore'
 import { PlayerBar } from './components/layout/PlayerBar'
 import { Sidebar, type ViewId } from './components/layout/Sidebar'
 import { HomeView } from './features/library/HomeView'
@@ -39,10 +40,16 @@ export default function App() {
 
   const View = VIEWS[view]
 
+  // going anywhere from the sidebar closes the player panel, and a video pauses with it
+  const navigate = (next: ViewId) => {
+    useNowPlayingStore.getState().setOpen(false)
+    setView(next)
+  }
+
   return (
     <div className="flex h-full flex-col text-fg">
       <div className="flex min-h-0 flex-1">
-        <Sidebar active={view} onNavigate={setView} />
+        <Sidebar active={view} onNavigate={navigate} />
         <div className="relative min-w-0 flex-1">
           <main className="h-full overflow-y-auto">
             <div className="drag-region sticky top-0 z-10 h-12 bg-gradient-to-b from-base/80 to-transparent" />
