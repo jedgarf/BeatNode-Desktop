@@ -31,7 +31,7 @@ export function ArtworkSection() {
           type="button"
           role="switch"
           aria-checked={enabled === true}
-          aria-label="Find missing artwork online"
+          aria-label="Find missing artwork online" title="Find missing artwork online"
           disabled={enabled === null}
           onClick={toggle}
           className={`relative mt-1 h-6 w-11 shrink-0 rounded-full transition ${enabled ? 'bg-accent' : 'bg-fg/20'} disabled:opacity-50`}

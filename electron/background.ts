@@ -48,9 +48,7 @@ function buildMenu(): Menu {
 function buildFrames(): NativeImage[] {
   const mac = process.platform === 'darwin'
   return Array.from({ length: FRAME_COUNT }, (_, i) => {
-    const image = nativeImage.createFromBuffer(renderFrame(i, mac ? 44 : 32, mac), mac ? { scaleFactor: 2 } : undefined)
-    if (mac) image.setTemplateImage(true)
-    return image
+    return nativeImage.createFromBuffer(renderFrame(i, mac ? 36 : 32), mac ? { scaleFactor: 2 } : undefined)
   })
 }
 
@@ -84,8 +82,13 @@ function refreshTray() {
 function createTray() {
   if (tray) return
   const mac = process.platform === 'darwin'
-  const icon = nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, mac ? 'tray-Template.png' : 'tray.png'))
-  if (mac) icon.setTemplateImage(true)
+  // colored on purpose, so on macOS it is not a template image that gets tinted to the menu bar
+  const icon = mac
+    ? nativeImage.createFromBuffer(
+        nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, 'beatnode.png')).resize({ width: 36, height: 36, quality: 'best' }).toPNG(),
+        { scaleFactor: 2 },
+      )
+    : nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, 'tray.png'))
   idleIcon = icon
   tray = new Tray(icon)
   if (process.platform === 'win32') tray.on('click', () => showWindow())

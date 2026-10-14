@@ -57,8 +57,8 @@ function barHeights(frame: number): number[] {
   return Array.from({ length: BARS }, (_, i) => 0.22 + 0.5 * (0.5 + 0.5 * Math.sin(phase + i * 1.7)))
 }
 
-// "template" is black bars on transparent, macOS tints it. otherwise white bars on the purple tile
-export function renderFrame(frame: number, size: number, template: boolean): Buffer {
+// white bars on the purple tile
+export function renderFrame(frame: number, size: number): Buffer {
   const heights = barHeights(frame)
   const total = BARS * BAR_WIDTH + (BARS - 1) * BAR_GAP
   const startX = (1 - total) / 2
@@ -72,7 +72,7 @@ export function renderFrame(frame: number, size: number, template: boolean): Buf
         for (let sx = 0; sx < SAMPLES; sx++) {
           const x = (px + (sx + 0.5) / SAMPLES) / size
           const y = (py + (sy + 0.5) / SAMPLES) / size
-          if (!template && insideRoundedRect(x, y, 0.03, 0.03, 0.94, 0.94, 0.22)) tile++
+          if (insideRoundedRect(x, y, 0.03, 0.03, 0.94, 0.94, 0.22)) tile++
           for (let i = 0; i < BARS; i++) {
             const h = heights[i]
             if (insideRoundedRect(x, y, startX + i * (BAR_WIDTH + BAR_GAP), 0.5 - h / 2, BAR_WIDTH, h, BAR_WIDTH / 2)) {
@@ -84,15 +84,11 @@ export function renderFrame(frame: number, size: number, template: boolean): Buf
       }
       const samples = SAMPLES * SAMPLES
       const o = (py * size + px) * 4
-      if (template) {
-        rgba[o + 3] = Math.round((bar / samples) * 255)
-      } else {
-        const mix = tile ? bar / tile : 0
-        rgba[o] = Math.round(124 + (255 - 124) * mix)
-        rgba[o + 1] = Math.round(58 + (255 - 58) * mix)
-        rgba[o + 2] = Math.round(237 + (255 - 237) * mix)
-        rgba[o + 3] = Math.round((tile / samples) * 255)
-      }
+      const mix = tile ? bar / tile : 0
+      rgba[o] = Math.round(124 + (255 - 124) * mix)
+      rgba[o + 1] = Math.round(58 + (255 - 58) * mix)
+      rgba[o + 2] = Math.round(237 + (255 - 237) * mix)
+      rgba[o + 3] = Math.round((tile / samples) * 255)
     }
   }
   return encodePng(rgba, size)

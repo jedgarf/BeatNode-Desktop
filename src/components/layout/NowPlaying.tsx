@@ -168,11 +168,11 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <button type="button" onClick={previous} aria-label="Previous" className="rounded-full p-2 hover:bg-white/10"><PrevIcon size={24} /></button>
-                <button type="button" onClick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'} className="rounded-full p-2 hover:bg-white/10">
+                <button type="button" onClick={previous} aria-label="Previous" title="Previous" className="rounded-full p-2 hover:bg-white/10"><PrevIcon size={24} /></button>
+                <button type="button" onClick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'} title={isPlaying ? 'Pause' : 'Play'} className="rounded-full p-2 hover:bg-white/10">
                   {isPlaying ? <PauseIcon size={28} /> : <PlayIcon size={28} />}
                 </button>
-                <button type="button" onClick={() => next()} aria-label="Next" className="rounded-full p-2 hover:bg-white/10"><NextIcon size={24} /></button>
+                <button type="button" onClick={() => next()} aria-label="Next" title="Next" className="rounded-full p-2 hover:bg-white/10"><NextIcon size={24} /></button>
                 <button type="button" onClick={toggleMute} aria-label={muted ? 'Unmute' : 'Mute'} title={muted ? 'Unmute (M)' : 'Mute (M)'} className="rounded-full p-2 hover:bg-white/10">
                   <VolumeLevelIcon volume={volume} muted={muted} size={24} />
                 </button>

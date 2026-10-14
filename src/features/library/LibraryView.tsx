@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { LibraryFilter, LibraryLayout, LibrarySort, Track } from '../../shared/types'
+import { PlusIcon } from '../../components/ui/icons'
 import { selectCurrentTrack, usePlayerStore } from '../player/store'
 import { EmptyLibrary } from './EmptyLibrary'
 import { TrackCard } from './TrackCard'
@@ -103,7 +104,7 @@ export function LibraryView() {
                 type="button"
                 onClick={() => setLayout(mode)}
                 aria-pressed={layout === mode}
-                aria-label={`${mode} view`}
+                aria-label={`${mode} view`} title={`${mode} view`}
                 className={`rounded-full px-3 py-1 text-sm transition ${layout === mode ? 'bg-fg/15 text-fg' : 'text-fg/50 hover:text-fg'}`}
               >
                 {mode === 'grid' ? 'Grid' : 'List'}
@@ -114,9 +115,13 @@ export function LibraryView() {
             type="button"
             onClick={importTracks}
             disabled={isImporting}
-            className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-accent-glow transition hover:bg-accent-soft disabled:opacity-60"
+            aria-label="Add media"
+            title={isImporting ? 'Importing…' : 'Add media'}
+            className="flex size-10 items-center justify-center rounded-full bg-accent text-white shadow-lg shadow-accent-glow transition hover:bg-accent-soft disabled:opacity-60"
           >
-            {isImporting ? 'Importing…' : 'Add media'}
+            {isImporting
+              ? <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+              : <PlusIcon size={20} />}
           </button>
         </div>
       </header>

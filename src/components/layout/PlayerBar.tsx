@@ -55,7 +55,7 @@ export function PlayerBar() {
         <button
           type="button"
           onClick={toggleNowPlaying}
-          aria-label={nowPlayingOpen ? 'Close now playing' : 'Open now playing'}
+          aria-label={nowPlayingOpen ? 'Close now playing' : 'Open now playing'} title={nowPlayingOpen ? 'Close now playing' : 'Open now playing'}
           className="relative shrink-0 rounded-lg transition hover:scale-105"
         >
           <CoverArt key={track?.id} track={track} className="size-14 animate-fade-up rounded-lg object-cover shadow-lg shadow-black/50" />
@@ -79,21 +79,21 @@ export function PlayerBar() {
       <div className="flex flex-col items-center gap-1">
         <div className="flex items-center gap-2">
           <ToggleButton active={shuffle} label="Shuffle" onClick={toggleShuffle}><ShuffleIcon size={18} /></ToggleButton>
-          <button type="button" onClick={previous} disabled={!track} aria-label="Previous" className="rounded-full p-2 text-fg/80 transition hover:text-fg disabled:opacity-30">
+          <button type="button" onClick={previous} disabled={!track} aria-label="Previous" title="Previous" className="rounded-full p-2 text-fg/80 transition hover:text-fg disabled:opacity-30">
             <PrevIcon size={22} />
           </button>
           <button
             type="button"
             onClick={togglePlay}
             disabled={!canControl}
-            aria-label={isPlaying ? 'Pause' : 'Play'}
+            aria-label={isPlaying ? 'Pause' : 'Play'} title={isPlaying ? 'Pause' : 'Play'}
             className="flex size-11 items-center justify-center rounded-full bg-fg text-base shadow-[0_0_24px_var(--c-glow)] transition hover:scale-105 active:scale-95 disabled:opacity-40 disabled:hover:scale-100"
           >
             {isBuffering && isPlaying
               ? <span className="size-5 animate-spin rounded-full border-2 border-black/20 border-t-black" />
               : isPlaying ? <PauseIcon size={22} /> : <PlayIcon size={22} className="translate-x-px" />}
           </button>
-          <button type="button" onClick={() => next()} disabled={!track} aria-label="Next" className="rounded-full p-2 text-fg/80 transition hover:text-fg disabled:opacity-30">
+          <button type="button" onClick={() => next()} disabled={!track} aria-label="Next" title="Next" className="rounded-full p-2 text-fg/80 transition hover:text-fg disabled:opacity-30">
             <NextIcon size={22} />
           </button>
           <ToggleButton active={repeat !== 'off'} label={`Repeat: ${repeat}`} onClick={cycleRepeat}>

@@ -25,7 +25,7 @@ export function TrackRow({ track, index, isCurrent, isPlaying, onPlay, playlistI
         <button
           type="button"
           onClick={onPlay}
-          aria-label={isCurrent && isPlaying ? `Pause ${track.title}` : `Play ${track.title}`}
+          aria-label={isCurrent && isPlaying ? `Pause ${track.title}` : `Play ${track.title}`} title={isCurrent && isPlaying ? `Pause ${track.title}` : `Play ${track.title}`}
           className={`flex h-8 w-10 items-center justify-center rounded-full ${isCurrent ? 'text-accent-soft' : 'text-fg'}`}
         >
           <span className="group-hover:hidden">{index + 1}</span>
