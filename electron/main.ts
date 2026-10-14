@@ -7,7 +7,7 @@ import { AUDIO_EXTENSIONS, VIDEO_EXTENSIONS } from '../src/shared/types'
 import { COVER_FILE_PATTERN, MEDIA_SCHEME, coversDir, fromMediaUrl, isGranted, isSupportedMedia, readTrack, restoreTrack } from './library'
 import { isIgnoredPath, registerFolderIpc, unexclude } from './folders'
 import { getSettings } from './settings'
-import { markQuitting, registerBackgroundIpc, shouldHideOnClose } from './background'
+import { destroyPopover, markQuitting, registerBackgroundIpc, shouldHideOnClose } from './background'
 import { closeDb, loadPlaylists, loadTracks, savePlaylists, saveTracks } from './db'
 import { sanitizePlaylists } from './playlists'
 import { registerSyncIpc } from './sync'
@@ -156,6 +156,7 @@ function createWindow() {
     win.hide()
   })
   win.on('closed', () => {
+    destroyPopover()
     win = null
   })
 

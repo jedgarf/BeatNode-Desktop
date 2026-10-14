@@ -1,5 +1,5 @@
 import { ipcRenderer, contextBridge } from 'electron'
-import type { BeatNodeApi, LibraryChange, PlayerCommand } from '../src/shared/types'
+import type { BeatNodeApi, LibraryChange, PlaybackReport, PlayerCommand } from '../src/shared/types'
 
 // returns an unsubscribe fn
 function subscribe<T>(channel: string, callback: (payload: T) => void): () => void {
@@ -44,6 +44,8 @@ const beatnode: BeatNodeApi = {
 
   reportPlayback: (report) => ipcRenderer.send('player:report', report),
   onPlayerCommand: (callback) => subscribe<PlayerCommand>('player:command', callback),
+  onTrayState: (callback) => subscribe<PlaybackReport>('tray:state', callback),
+  sendTrayCommand: (command) => ipcRenderer.send('tray:command', command),
   getBackgroundPlayback: () => ipcRenderer.invoke('background:get'),
   setBackgroundPlayback: (enabled) => ipcRenderer.invoke('background:set', enabled),
   getSystemVolume: () => ipcRenderer.invoke('systemVolume:get'),

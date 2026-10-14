@@ -54,6 +54,7 @@ export interface PlaybackReport {
 }
 
 export type PlayerCommand = 'toggle' | 'next' | 'previous'
+export type TrayCommand = PlayerCommand | 'show' | 'quit'
 
 export type LibraryLayout = 'grid' | 'list'
 export type LibraryFilter = 'all' | 'music' | 'videos'
@@ -83,6 +84,8 @@ export interface BeatNodeApi {
 
   reportPlayback(report: PlaybackReport): void
   onPlayerCommand(callback: (command: PlayerCommand) => void): () => void
+  onTrayState(callback: (report: PlaybackReport) => void): () => void
+  sendTrayCommand(command: TrayCommand): void
   getBackgroundPlayback(): Promise<boolean>
   setBackgroundPlayback(enabled: boolean): Promise<void>
   getSystemVolume(): Promise<SystemVolume | null>
