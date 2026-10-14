@@ -5,7 +5,7 @@
   "asar": true,
   "asarUnpack": ["**/node_modules/better-sqlite3/**"],
   "productName": "BeatNode",
-  "copyright": "Copyright © 2026 BeatNode",
+  "copyright": "Copyright © 2026 JEFDev",
   "directories": {
     "output": "release/${version}"
   },

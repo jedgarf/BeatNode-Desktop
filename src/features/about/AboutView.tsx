@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { LogoMark } from '../../components/ui/Logo'
 import { useTheme } from '../settings/theme'
 
+export const DEVELOPER_URL = 'https://jefdev.vercel.app'
+
 export function AboutView() {
   useTheme()
   const [version, setVersion] = useState('')
@@ -22,7 +24,13 @@ export function AboutView() {
       </h1>
       <p className="text-sm text-fg/60">{version ? `Version ${version}` : '\u00a0'}</p>
       <p className="mt-4 text-sm text-fg/80">Your music and videos, in one place.</p>
-      <p className="mt-6 text-xs text-fg/40">&copy; {new Date().getFullYear()} BeatNode</p>
+      <p className="mt-6 text-xs text-fg/50">
+        Developed by{' '}
+        <a href={DEVELOPER_URL} target="_blank" rel="noreferrer" className="font-semibold text-accent-soft hover:underline">
+          JEFDev
+        </a>
+      </p>
+      <p className="mt-1 text-xs text-fg/40">&copy; {new Date().getFullYear()} JEFDev</p>
     </div>
   )
 }

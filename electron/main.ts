@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, net, protocol } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, net, protocol, shell } from 'electron'
 import { fileURLToPath } from 'node:url'
 import { mkdir, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -156,6 +156,8 @@ function createWindow() {
     },
   })
 
+  openLinksExternally(win)
+
   // hide to tray instead of killing playback
   win.on('close', (event) => {
     if (!shouldHideOnClose() || !win) return
@@ -215,6 +217,14 @@ app.on('before-quit', () => {
 
 let aboutWin: BrowserWindow | null = null
 
+// target=_blank links go to the browser, never a new app window
+function openLinksExternally(window: BrowserWindow) {
+  window.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('https://')) void shell.openExternal(url)
+    return { action: 'deny' }
+  })
+}
+
 // our own small window, the native alert left-aligns everything
 function showAbout() {
   if (aboutWin && !aboutWin.isDestroyed()) {
@@ -223,7 +233,7 @@ function showAbout() {
   }
   aboutWin = new BrowserWindow({
     width: 340,
-    height: 360,
+    height: 390,
     title: 'About BeatNode',
     resizable: false,
     minimizable: false,
@@ -235,6 +245,7 @@ function showAbout() {
     webPreferences: { preload: path.join(__dirname, 'preload.mjs'), devTools: Boolean(VITE_DEV_SERVER_URL) },
   })
   aboutWin.setMenuBarVisibility(false)
+  openLinksExternally(aboutWin)
   aboutWin.once('ready-to-show', () => aboutWin?.show())
   aboutWin.on('closed', () => {
     aboutWin = null

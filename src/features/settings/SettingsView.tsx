@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { DEVELOPER_URL } from '../about/AboutView'
 import { StickyHeader } from '../../components/layout/StickyHeader'
 import { SettingsIcon } from '../../components/ui/icons'
 import { PageTitle } from '../../components/ui/PageTitle'
@@ -72,6 +74,22 @@ export function SettingsView() {
           ))}
         </dl>
       </section>
+      <Credits />
     </div>
+  )
+}
+
+function Credits() {
+  const [version, setVersion] = useState('')
+  useEffect(() => {
+    window.beatnode.getAppInfo().then((info) => setVersion(info.version)).catch(console.error)
+  }, [])
+  return (
+    <p className="mt-8 text-center text-xs text-fg/40">
+      BeatNode{version && ` ${version}`} &middot; Developed by{' '}
+      <a href={DEVELOPER_URL} target="_blank" rel="noreferrer" className="font-semibold text-fg/60 transition hover:text-accent-soft">
+        JEFDev
+      </a>
+    </p>
   )
 }
