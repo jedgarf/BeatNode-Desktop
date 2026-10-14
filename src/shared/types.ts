@@ -1,0 +1,97 @@
+
+export const AUDIO_EXTENSIONS = ['mp3', 'flac', 'wav', 'm4a'] as const
+// what chromium can decode (h264/aac mp4, vp8/vp9 webm), other codecs may not play
+export const VIDEO_EXTENSIONS = ['mp4', 'm4v', 'webm', 'mov'] as const
+
+export type MediaKind = 'audio' | 'video'
+
+export interface Track {
+  id: string
+  path: string
+  title: string
+  artist: string
+  album: string
+  kind: MediaKind
+  duration: number
+  cover: string | null
+  src: string
+  // artist|title|album hash, same song gets the same key on every device
+  key: string
+}
+
+export interface PlaylistEntry {
+  key: string
+  title: string
+  artist: string
+}
+
+export interface Playlist {
+  id: string
+  name: string
+  entries: PlaylistEntry[]
+  createdAt: number
+  updatedAt: number
+  deleted?: boolean
+}
+
+export interface LibraryChange {
+  added: Track[]
+  removedPaths: string[]
+}
+
+export interface SyncFile {
+  version: 1
+  updatedAt: number
+  playlists: Playlist[]
+}
+
+export interface PlaybackReport {
+  hasTrack: boolean
+  title: string
+  artist: string
+  isPlaying: boolean
+}
+
+export type PlayerCommand = 'toggle' | 'next' | 'previous'
+
+export type LibraryLayout = 'grid' | 'list'
+export type LibraryFilter = 'all' | 'music' | 'videos'
+export type LibrarySort = 'added' | 'title' | 'artist' | 'album' | 'duration'
+
+export interface LibraryPrefs {
+  layout: LibraryLayout
+  filter: LibraryFilter
+  sort: LibrarySort
+}
+
+export interface BeatNodeApi {
+  openAudioFiles(): Promise<Track[]>
+  saveCover(trackId: string, dataUrl: string): Promise<string | null>
+  loadLibrary(): Promise<Track[]>
+  saveLibrary(tracks: Track[]): Promise<void>
+  loadPlaylists(): Promise<unknown[]>
+  savePlaylists(playlists: Playlist[]): Promise<void>
+
+  reportPlayback(report: PlaybackReport): void
+  onPlayerCommand(callback: (command: PlayerCommand) => void): () => void
+  getBackgroundPlayback(): Promise<boolean>
+  setBackgroundPlayback(enabled: boolean): Promise<void>
+  getLibraryPrefs(): Promise<LibraryPrefs>
+  setLibraryPrefs(prefs: LibraryPrefs): Promise<void>
+
+  getFolders(): Promise<string[]>
+  addFolders(): Promise<string[]>
+  removeFolder(folder: string): Promise<string[]>
+  startFolderWatch(): Promise<void>
+  rescanFolders(): Promise<void>
+  excludeFromLibrary(filePath: string): Promise<void>
+  onLibraryChange(callback: (change: LibraryChange) => void): () => void
+  onScanState(callback: (scanning: boolean) => void): () => void
+
+  getSyncFolder(): Promise<string | null>
+  chooseSyncFolder(): Promise<string | null>
+  disableSync(): Promise<void>
+  readSyncFile(): Promise<SyncFile | null>
+  writeSyncFile(file: SyncFile): Promise<void>
+  onSyncFileChange(callback: () => void): () => void
+}
