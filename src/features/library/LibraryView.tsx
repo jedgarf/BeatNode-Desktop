@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { LibraryFilter, LibraryLayout, LibrarySort, Track } from '../../shared/types'
-import { PlusIcon } from '../../components/ui/icons'
+import { LibraryIcon, PlusIcon } from '../../components/ui/icons'
+import { PageTitle } from '../../components/ui/PageTitle'
 import { selectCurrentTrack, usePlayerStore } from '../player/store'
 import { EmptyLibrary } from './EmptyLibrary'
 import { TrackCard } from './TrackCard'
@@ -93,7 +94,7 @@ export function LibraryView() {
     <div className="flex min-h-full flex-col">
       <header className="mb-6 flex items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Library</h1>
+          <PageTitle icon={<LibraryIcon size={24} />}>Library</PageTitle>
           <p className="mt-1 text-sm text-fg/50">{totals.music} {totals.music === 1 ? 'song' : 'songs'} · {totals.videos} {totals.videos === 1 ? 'video' : 'videos'}</p>
         </div>
         <div className="flex items-center gap-2">

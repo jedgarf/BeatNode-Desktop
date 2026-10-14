@@ -1,3 +1,5 @@
+import { SettingsIcon } from '../../components/ui/icons'
+import { PageTitle } from '../../components/ui/PageTitle'
 import { ArtworkSection } from './ArtworkSection'
 import { BackgroundSection } from './BackgroundSection'
 import { FoldersSection } from './FoldersSection'
@@ -24,7 +26,7 @@ export function SettingsView() {
   const setMode = useThemeStore((s) => s.setMode)
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-bold tracking-tight">Settings</h1>
+      <PageTitle icon={<SettingsIcon size={24} />} className="mb-8">Settings</PageTitle>
       <section className="mb-6 rounded-2xl bg-fg/[0.04] p-5 ring-1 ring-fg/10">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-fg/50">Appearance</h2>
         <div role="radiogroup" aria-label="Theme" className="grid grid-cols-3 gap-2">

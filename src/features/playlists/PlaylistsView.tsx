@@ -1,5 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { CoverArt } from '../../components/ui/CoverArt'
+import { PlaylistsIcon } from '../../components/ui/icons'
+import { PageTitle } from '../../components/ui/PageTitle'
 import { TrackRow, TRACK_ROW_GRID } from '../library/TrackRow'
 import { selectCurrentTrack, usePlayerStore } from '../player/store'
 import type { Track } from '../../shared/types'
@@ -28,7 +30,7 @@ export function PlaylistsView() {
   return (
     <div className="flex min-h-full flex-col">
       <header className="mb-8 flex items-end justify-between gap-4">
-        <h1 className="text-3xl font-bold tracking-tight">Playlists</h1>
+        <PageTitle icon={<PlaylistsIcon size={24} />}>Playlists</PageTitle>
         <form onSubmit={onCreate} className="flex items-center gap-2">
           <input
             value={newName}

@@ -1,11 +1,7 @@
+import { Greeting } from '../../components/ui/Greeting'
 import { selectCurrentTrack, usePlayerStore } from '../player/store'
 import { EmptyLibrary } from './EmptyLibrary'
 import { TrackCard } from './TrackCard'
-
-function greeting(): string {
-  const hour = new Date().getHours()
-  return hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
-}
 
 export function HomeView() {
   const library = usePlayerStore((s) => s.library)
@@ -18,7 +14,7 @@ export function HomeView() {
 
   return (
     <div className="flex min-h-full flex-col">
-      <h1 className="mb-8 text-3xl font-bold tracking-tight">{greeting()}</h1>
+      <Greeting className="mb-8" />
       {recent.length === 0 ? (
         <EmptyLibrary />
       ) : (
