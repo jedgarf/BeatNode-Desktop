@@ -1,4 +1,5 @@
 import { CoverArt } from '../../components/ui/CoverArt'
+import { PauseIcon, PlayIcon } from '../../components/ui/icons'
 import type { Track } from '../../shared/types'
 import { TrackMenu } from '../playlists/TrackMenu'
 
@@ -21,9 +22,9 @@ export function TrackCard({ track, isCurrent, isPlaying, onPlay }: TrackItemProp
           type="button"
           onClick={onPlay}
           aria-label={isCurrent && isPlaying ? `Pause ${track.title}` : `Play ${track.title}`}
-          className={`absolute bottom-2 right-2 rounded-full bg-accent px-3.5 py-1.5 text-xs font-semibold text-white shadow-lg shadow-accent-glow transition duration-200 hover:bg-accent-soft ${isCurrent ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 focus-visible:translate-y-0 focus-visible:opacity-100'}`}
+          className={`absolute bottom-2 right-2 flex size-10 items-center justify-center rounded-full bg-accent text-white shadow-lg shadow-accent-glow transition duration-200 hover:bg-accent-soft ${isCurrent ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 focus-visible:translate-y-0 focus-visible:opacity-100'}`}
         >
-          {isCurrent && isPlaying ? 'Pause' : 'Play'}
+          {isCurrent && isPlaying ? <PauseIcon size={20} /> : <PlayIcon size={20} className="translate-x-px" />}
         </button>
       </div>
       <div className="mt-3 flex items-start justify-between gap-1">

@@ -1,4 +1,5 @@
 import { CoverArt } from '../../components/ui/CoverArt'
+import { PauseIcon, PlayIcon } from '../../components/ui/icons'
 import { formatTime } from '../../shared/format'
 import type { Track } from '../../shared/types'
 import { TrackMenu } from '../playlists/TrackMenu'
@@ -28,7 +29,7 @@ export function TrackRow({ track, index, isCurrent, isPlaying, onPlay, playlistI
           className={`flex h-8 w-10 items-center justify-center rounded-full ${isCurrent ? 'text-accent-soft' : 'text-fg'}`}
         >
           <span className="group-hover:hidden">{index + 1}</span>
-          <span className="hidden text-xs font-semibold group-hover:block">{isCurrent && isPlaying ? 'Pause' : 'Play'}</span>
+          <span className="hidden group-hover:block">{isCurrent && isPlaying ? <PauseIcon size={18} /> : <PlayIcon size={18} />}</span>
         </button>
       </div>
       <div className="flex min-w-0 items-center gap-3">

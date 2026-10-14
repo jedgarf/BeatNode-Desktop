@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
 import type { Track } from '../../shared/types'
+import { MoreIcon } from '../../components/ui/icons'
 import { usePlayerStore } from '../player/store'
 import { entryFromTrack, usePlaylistStore } from './store'
 import { useLivePlaylists } from './useLivePlaylists'
@@ -77,9 +78,10 @@ export function TrackMenu({ track, playlistId, className = '' }: TrackMenuProps)
         aria-label="More options"
         aria-haspopup="menu"
         aria-expanded={open}
-        className={`rounded-full px-3 py-1.5 text-xs text-fg/60 transition hover:bg-fg/10 hover:text-fg ${open ? 'bg-fg/10' : ''}`}
+        title="More options"
+        className={`rounded-full p-1.5 text-fg/60 transition hover:bg-fg/10 hover:text-fg ${open ? 'bg-fg/10 text-fg' : ''}`}
       >
-        More
+        <MoreIcon size={18} />
       </button>
       {open &&
         createPortal(

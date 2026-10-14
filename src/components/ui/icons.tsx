@@ -31,3 +31,4 @@ export function VolumeLevelIcon({ volume, muted, ...p }: IconProps & { volume: n
   if (muted || volume === 0) return <VolumeMutedIcon {...p} />
   return volume < 0.5 ? <VolumeLowIcon {...p} /> : <VolumeIcon {...p} />
 }
+export const MoreIcon = (p: IconProps) => <Icon {...p}><circle cx="5" cy="12" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="19" cy="12" r="1.8" /></Icon>
