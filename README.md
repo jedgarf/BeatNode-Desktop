@@ -16,6 +16,10 @@
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178c6">
 </p>
 
+<p align="center">
+  <img src="docs/preview.jpg" alt="BeatNode library and now playing screens" width="900">
+</p>
+
 A local-first music and video player for macOS, Windows and Linux. Point it at your folders, it builds the library, and your playlists can follow you across machines through any synced folder (Dropbox, iCloud Drive, Syncthing, a USB stick).
 
 No account and no server of ours. Your files and playlists stay on your machine. The one exception is the optional album artwork lookup (see below), which you can turn off in Settings.
