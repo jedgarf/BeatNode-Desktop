@@ -22,6 +22,22 @@ No account, no server, nothing leaves your machine.
 
 BeatNode is open source under the [MIT license](LICENSE). Read it, fork it, learn from it, or build on it.
 
+## Download
+
+Grab the latest installer from the [Releases page](https://github.com/jedgarf/BeatNode-Desktop/releases/latest).
+
+| OS | File |
+| --- | --- |
+| macOS (Apple Silicon) | `BeatNode-Mac-<version>-Installer.dmg` |
+| Windows (x64) | `BeatNode-Windows-<version>-Setup.exe` |
+| Linux | `BeatNode-Linux-<version>.AppImage` |
+
+The installers are not code signed yet, so your OS will warn you the first time:
+
+- **macOS**: right-click the app and choose Open, or run `xattr -cr /Applications/BeatNode.app` once.
+- **Windows**: in the SmartScreen dialog click More info, then Run anyway.
+- **Linux**: `chmod +x BeatNode-Linux-*.AppImage`, then run it.
+
 ## Features
 
 - Plays audio (`mp3`, `flac`, `wav`, `m4a`, `aac`, `ogg`, `oga`, `opus`, `weba`) and video (`mp4`, `m4v`, `webm`, `mov`, `mkv`, `ogv`)
