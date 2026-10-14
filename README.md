@@ -4,9 +4,23 @@
 
 <h1 align="center">BeatNode Desktop</h1>
 
+<p align="center">
+  A free, open source, local-first music and video player.
+</p>
+
+<p align="center">
+  <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-7c3aed">
+  <img alt="Platforms" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-555">
+  <img alt="Electron" src="https://img.shields.io/badge/Electron-30-47848f">
+  <img alt="React" src="https://img.shields.io/badge/React-18-61dafb">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178c6">
+</p>
+
 A local-first music and video player for macOS, Windows and Linux. Point it at your folders, it builds the library, and your playlists can follow you across machines through any synced folder (Dropbox, iCloud Drive, Syncthing, a USB stick).
 
 No account, no server, nothing leaves your machine.
+
+BeatNode is open source under the [MIT license](LICENSE). Read it, fork it, learn from it, or build on it.
 
 ## Features
 
@@ -29,6 +43,8 @@ No account, no server, nothing leaves your machine.
 | Left / Right | Seek 5 seconds |
 | Up / Down | Volume +/- 5% |
 | M | Mute |
+| F | Fullscreen (video) |
+| Esc | Close Now Playing |
 
 ## Getting started
 
@@ -109,3 +125,22 @@ Electron, React 18, TypeScript, Vite, Zustand, Tailwind CSS 4, better-sqlite3, m
 
 - Video support is whatever Chromium can decode (H.264/AAC mp4, VP8/VP9 webm). Other codecs may not play. This includes `mkv` files with HEVC video or DTS/AC3 audio, and embedded subtitles are not shown.
 - Tracks are matched across machines by tags, so untagged files with the same name can collide.
+
+## Contributing
+
+Issues and pull requests are welcome. For anything bigger than a small fix, open an issue first so we can agree on the approach.
+
+```bash
+yarn lint
+npx tsc --noEmit
+```
+
+Both should pass before you open a pull request.
+
+## License
+
+Released under the [MIT License](LICENSE).
+
+## Author
+
+Made by [jedgarf](https://github.com/jedgarf).
