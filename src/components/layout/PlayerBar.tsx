@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { CoverArt } from '../ui/CoverArt'
 import { Equalizer } from '../ui/Equalizer'
 import { Slider } from '../ui/Slider'
-import { NextIcon, PauseIcon, PlayIcon, PrevIcon, RepeatIcon, RepeatOneIcon, ShuffleIcon } from '../ui/icons'
+import { ChevronDownIcon, ChevronUpIcon, NextIcon, PauseIcon, PlayIcon, PrevIcon, RepeatIcon, RepeatOneIcon, ShuffleIcon, VolumeLevelIcon } from '../ui/icons'
 import { formatTime } from '../../shared/format'
 import { useNowPlayingStore } from '../../features/player/nowPlayingStore'
 import { selectCurrentTrack, usePlayerStore } from '../../features/player/store'
@@ -124,12 +124,18 @@ export function PlayerBar() {
           aria-label="Now playing"
           aria-pressed={nowPlayingOpen}
           title="Now playing"
-          className={`rounded-full px-2 py-1 text-xs transition ${nowPlayingOpen ? 'text-accent-soft' : 'text-fg/60 hover:text-fg'}`}
+          className={`rounded-full p-2 transition ${nowPlayingOpen ? 'text-accent-soft' : 'text-fg/60 hover:text-fg'}`}
         >
-          Now playing
+          {nowPlayingOpen ? <ChevronDownIcon size={18} /> : <ChevronUpIcon size={18} />}
         </button>
-        <button type="button" onClick={toggleMute} aria-label={muted ? 'Unmute' : 'Mute'} className="rounded-full px-2 py-1 text-xs text-fg/60 transition hover:text-fg">
-          {muted ? 'Unmute' : 'Mute'}
+        <button
+          type="button"
+          onClick={toggleMute}
+          aria-label={muted ? 'Unmute' : 'Mute'}
+          title={muted ? 'Unmute (M)' : 'Mute (M)'}
+          className="rounded-full p-2 text-fg/60 transition hover:text-fg"
+        >
+          <VolumeLevelIcon volume={volume} muted={muted} size={18} />
         </button>
         <Slider
           className="w-28"

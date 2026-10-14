@@ -19,3 +19,15 @@ export const PrevIcon = (p: IconProps) => <Icon {...p}><path d="M18 6.2v11.6a.8.
 export const ShuffleIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" /></Icon>
 export const RepeatIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m17 2 4 4-4 4" /><path d="M3 11v-1a4 4 0 0 1 4-4h14" /><path d="m7 22-4-4 4-4" /><path d="M21 13v1a4 4 0 0 1-4 4H3" /></Icon>
 export const RepeatOneIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m17 2 4 4-4 4" /><path d="M3 11v-1a4 4 0 0 1 4-4h14" /><path d="m7 22-4-4 4-4" /><path d="M21 13v1a4 4 0 0 1-4 4H3" /><path d="M11 10h1v4" /></Icon>
+export const VolumeIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M11 5 6 9H2v6h4l5 4V5Z" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /></Icon>
+export const VolumeLowIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M11 5 6 9H2v6h4l5 4V5Z" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /></Icon>
+export const VolumeMutedIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M11 5 6 9H2v6h4l5 4V5Z" /><path d="m22 9-6 6" /><path d="m16 9 6 6" /></Icon>
+export const FullscreenIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" /></Icon>
+export const ExitFullscreenIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" /></Icon>
+export const ChevronUpIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m18 15-6-6-6 6" /></Icon>
+export const ChevronDownIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m6 9 6 6 6-6" /></Icon>
+
+export function VolumeLevelIcon({ volume, muted, ...p }: IconProps & { volume: number; muted: boolean }) {
+  if (muted || volume === 0) return <VolumeMutedIcon {...p} />
+  return volume < 0.5 ? <VolumeLowIcon {...p} /> : <VolumeIcon {...p} />
+}

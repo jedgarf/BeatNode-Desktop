@@ -4,7 +4,7 @@ import { mediaElement } from '../../features/player/mediaElement'
 import { useNowPlayingStore } from '../../features/player/nowPlayingStore'
 import { selectCurrentTrack, usePlayerStore } from '../../features/player/store'
 import { CoverArt } from '../ui/CoverArt'
-import { NextIcon, PauseIcon, PlayIcon, PrevIcon } from '../ui/icons'
+import { ChevronDownIcon, ExitFullscreenIcon, FullscreenIcon, NextIcon, PauseIcon, PlayIcon, PrevIcon, VolumeLevelIcon } from '../ui/icons'
 import { Equalizer } from '../ui/Equalizer'
 import { Slider } from '../ui/Slider'
 import type { Track } from '../../shared/types'
@@ -27,6 +27,7 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
   const currentTime = usePlayerStore((s) => s.currentTime)
   const duration = usePlayerStore((s) => s.duration)
   const muted = usePlayerStore((s) => s.muted)
+  const volume = usePlayerStore((s) => s.volume)
   const { togglePlay, next, previous, seek, toggleMute } = usePlayerStore.getState()
   const close = useNowPlayingStore((s) => s.setOpen)
 
@@ -106,9 +107,10 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
           type="button"
           onClick={() => close(false)}
           aria-label="Close now playing"
-          className="no-drag rounded-full px-3 py-1.5 text-sm text-fg/70 transition hover:bg-fg/10 hover:text-fg"
+          title="Close (Esc)"
+          className="no-drag rounded-full p-2 text-fg/70 transition hover:bg-fg/10 hover:text-fg"
         >
-          Close
+          <ChevronDownIcon size={20} />
         </button>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{track?.title ?? 'Nothing playing'}</p>
@@ -120,9 +122,9 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
             onClick={toggleFullscreen}
             aria-label="Fullscreen"
             title="Fullscreen (F)"
-            className="no-drag rounded-full px-3 py-1.5 text-sm text-fg/70 transition hover:bg-fg/10 hover:text-fg"
+            className="no-drag rounded-full p-2 text-fg/70 transition hover:bg-fg/10 hover:text-fg"
           >
-            Fullscreen
+            <FullscreenIcon size={20} />
           </button>
         )}
       </header>
@@ -171,12 +173,12 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
                   {isPlaying ? <PauseIcon size={28} /> : <PlayIcon size={28} />}
                 </button>
                 <button type="button" onClick={() => next()} aria-label="Next" className="rounded-full p-2 hover:bg-white/10"><NextIcon size={24} /></button>
-                <button type="button" onClick={toggleMute} aria-label={muted ? 'Unmute' : 'Mute'} className="rounded-full px-3 py-2 text-sm hover:bg-white/10">
-                  {muted ? 'Unmute' : 'Mute'}
+                <button type="button" onClick={toggleMute} aria-label={muted ? 'Unmute' : 'Mute'} title={muted ? 'Unmute (M)' : 'Mute (M)'} className="rounded-full p-2 hover:bg-white/10">
+                  <VolumeLevelIcon volume={volume} muted={muted} size={24} />
                 </button>
               </div>
-              <button type="button" onClick={toggleFullscreen} aria-label="Exit fullscreen" className="rounded-full px-3 py-2 text-sm hover:bg-white/10">
-                Exit fullscreen
+              <button type="button" onClick={toggleFullscreen} aria-label="Exit fullscreen" title="Exit fullscreen (F)" className="rounded-full p-2 hover:bg-white/10">
+                <ExitFullscreenIcon size={24} />
               </button>
             </div>
           </div>
