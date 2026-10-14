@@ -67,5 +67,8 @@ jobs:
 
       - uses: softprops/action-gh-release@v2
         with:
-          files: installers/*
+          files: |
+            installers/**/*.dmg
+            installers/**/*.exe
+            installers/**/*.AppImage
           generate_release_notes: true
