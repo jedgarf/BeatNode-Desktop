@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, nativeTheme, net, protocol } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, net, protocol } from 'electron'
 import { fileURLToPath } from 'node:url'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -11,6 +11,7 @@ import { closeDb, loadPlaylists, loadTracks, savePlaylists, saveTracks } from '.
 import { sanitizePlaylists } from './playlists'
 import { registerSyncIpc } from './sync'
 import { registerPrefsIpc } from './prefs'
+import { registerArtworkIpc } from './artwork'
 import type { Playlist, Track } from '../src/shared/types'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -104,6 +105,7 @@ function registerIpc() {
   registerFolderIpc(() => win)
   registerSyncIpc(() => win)
   registerPrefsIpc()
+  registerArtworkIpc()
 
   ipcMain.handle('library:load', async (): Promise<Track[]> => {
     const restored = await Promise.all(loadTracks().map(restoreTrack))
@@ -194,7 +196,63 @@ app.on('before-quit', () => {
   closeDb()
 })
 
+const ABOUT_DETAIL = 'Your music and videos, in one place.'
+
+function showAbout() {
+  const options = {
+    type: 'none' as const,
+    title: 'About BeatNode',
+    message: `BeatNode ${app.getVersion()}`,
+    detail: `${ABOUT_DETAIL}\n\n© ${new Date().getFullYear()} BeatNode`,
+    icon: path.join(process.env.VITE_PUBLIC, 'beatnode.png'),
+    buttons: ['OK'],
+  }
+  if (win) void dialog.showMessageBox(win, options)
+  else void dialog.showMessageBox(options)
+}
+
+// windows/linux only get File > About and Exit, mac keeps the bare roles so copy/paste still work
+function buildMenu() {
+  app.setAboutPanelOptions({
+    applicationName: 'BeatNode',
+    applicationVersion: app.getVersion(),
+    version: '',
+    credits: ABOUT_DETAIL,
+    copyright: `© ${new Date().getFullYear()} BeatNode`,
+    iconPath: path.join(process.env.VITE_PUBLIC, 'beatnode.png'),
+  })
+  const template: Electron.MenuItemConstructorOptions[] =
+    process.platform === 'darwin'
+      ? [
+          {
+            label: 'BeatNode',
+            submenu: [
+              { role: 'about', label: 'About BeatNode' },
+              { type: 'separator' },
+              { role: 'hide', label: 'Hide BeatNode' },
+              { role: 'hideOthers' },
+              { role: 'unhide' },
+              { type: 'separator' },
+              { role: 'quit', label: 'Quit BeatNode' },
+            ],
+          },
+          { role: 'editMenu' },
+          { role: 'windowMenu' },
+        ]
+      : [
+          {
+            label: 'File',
+            submenu: [{ label: 'About BeatNode', click: showAbout }, { type: 'separator' }, { label: 'Exit', click: () => app.quit() }],
+          },
+        ]
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+}
+
+// windows shows this id in notifications and taskbar grouping instead of electron.app.*
+if (process.platform === 'win32') app.setAppUserModelId('com.jefdev.beatnode.desktop')
+
 app.whenReady().then(() => {
+  buildMenu()
   if (VITE_DEV_SERVER_URL && process.platform === 'darwin') app.dock.setIcon(path.join(process.env.VITE_PUBLIC, 'beatnode.png'))
   registerMediaProtocol()
   registerIpc()

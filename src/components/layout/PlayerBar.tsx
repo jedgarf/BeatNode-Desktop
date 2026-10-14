@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { CoverArt } from '../ui/CoverArt'
+import { Equalizer } from '../ui/Equalizer'
 import { Slider } from '../ui/Slider'
 import { NextIcon, PauseIcon, PlayIcon, PrevIcon, RepeatIcon, RepeatOneIcon, ShuffleIcon } from '../ui/icons'
 import { formatTime } from '../../shared/format'
@@ -55,12 +56,17 @@ export function PlayerBar() {
           type="button"
           onClick={toggleNowPlaying}
           aria-label={nowPlayingOpen ? 'Close now playing' : 'Open now playing'}
-          className="shrink-0 rounded-lg transition hover:scale-105"
+          className="relative shrink-0 rounded-lg transition hover:scale-105"
         >
-          <CoverArt track={track} className="size-14 rounded-lg object-cover shadow-lg shadow-black/50" />
+          <CoverArt key={track?.id} track={track} className="size-14 animate-fade-up rounded-lg object-cover shadow-lg shadow-black/50" />
+          {track && (
+            <span className={`absolute inset-0 flex items-center justify-center rounded-lg bg-black/45 text-white transition-opacity duration-300 ${isPlaying ? 'opacity-100' : 'opacity-0'}`}>
+              <Equalizer playing={isPlaying} className="h-4" />
+            </span>
+          )}
         </button>
         {track ? (
-          <div className="min-w-0">
+          <div key={track.id} className="min-w-0 animate-fade-up">
             <p className="truncate text-sm font-semibold" title={track.title}>{track.title}</p>
             <p className="truncate text-xs text-fg/50" title={track.artist}>{track.artist}</p>
           </div>

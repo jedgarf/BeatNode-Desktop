@@ -18,7 +18,7 @@
 
 A local-first music and video player for macOS, Windows and Linux. Point it at your folders, it builds the library, and your playlists can follow you across machines through any synced folder (Dropbox, iCloud Drive, Syncthing, a USB stick).
 
-No account, no server, nothing leaves your machine.
+No account and no server of ours. Your files and playlists stay on your machine. The one exception is the optional album artwork lookup (see below), which you can turn off in Settings.
 
 BeatNode is open source under the [MIT license](LICENSE). Read it, fork it, learn from it, or build on it.
 
@@ -44,6 +44,7 @@ The installers are not code signed yet, so your OS will warn you the first time:
 - Watched folders: add a folder once, new files are picked up and removed files disappear on their own
 - Add individual files from the file dialog
 - Tags and cover art read from the files, video thumbnails generated on import
+- Optional online artwork lookup for songs with no cover: title and artist are sent to the iTunes catalog, nothing else. On by default, switch it off in Settings
 - Playlists with per-track menu
 - Shuffle, repeat (off / all / one), volume, seek
 - Playlist sync through a plain folder, with last-edit-wins merging

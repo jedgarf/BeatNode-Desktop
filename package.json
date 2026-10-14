@@ -1,7 +1,10 @@
 {
   "name": "beatnode-desktop",
+  "productName": "BeatNode",
+  "description": "Your music and videos, in one place.",
+  "author": "BeatNode",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "type": "module",
   "scripts": {

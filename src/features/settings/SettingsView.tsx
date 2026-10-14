@@ -1,3 +1,4 @@
+import { ArtworkSection } from './ArtworkSection'
 import { BackgroundSection } from './BackgroundSection'
 import { FoldersSection } from './FoldersSection'
 import { SyncSection } from './SyncSection'
@@ -46,6 +47,7 @@ export function SettingsView() {
         </div>
       </section>
       <BackgroundSection />
+      <ArtworkSection />
       <FoldersSection />
       <SyncSection />
       <section className="rounded-2xl bg-fg/[0.04] p-5 ring-1 ring-fg/10">

@@ -34,6 +34,9 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 const beatnode: BeatNodeApi = {
   openAudioFiles: () => ipcRenderer.invoke('dialog:openAudioFile'),
   saveCover: (trackId, dataUrl) => ipcRenderer.invoke('covers:save', trackId, dataUrl),
+  findCover: (filePath, artist, title) => ipcRenderer.invoke('covers:find', filePath, artist, title),
+  getOnlineArtwork: () => ipcRenderer.invoke('onlineArtwork:get'),
+  setOnlineArtwork: (enabled) => ipcRenderer.invoke('onlineArtwork:set', enabled),
   loadLibrary: () => ipcRenderer.invoke('library:load'),
   saveLibrary: (tracks) => ipcRenderer.invoke('library:save', tracks),
   loadPlaylists: () => ipcRenderer.invoke('playlists:load'),

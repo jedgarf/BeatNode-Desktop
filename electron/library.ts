@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto'
-import { access, mkdir, writeFile } from 'node:fs/promises'
+import { access } from 'node:fs/promises'
 import path from 'node:path'
 import { app } from 'electron'
 import { TrackType, parseFile, selectCover } from 'music-metadata'
+import { embeddedCover, folderCover } from './artwork'
 import { AUDIO_EXTENSIONS, VIDEO_EXTENSIONS, type MediaKind, type Track } from '../src/shared/types'
 
 export const MEDIA_SCHEME = 'beatnode'
@@ -12,11 +13,10 @@ const grantedPaths = new Set<string>()
 
 export const coversDir = () => path.join(app.getPath('userData'), 'covers')
 
-const COVER_EXTENSIONS: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' }
 // only our own generated cover names get served
 export const COVER_FILE_PATTERN = /^[a-f0-9]{16}\.(jpg|png|webp|gif)$/
 
-function trackId(filePath: string): string {
+export function trackId(filePath: string): string {
   return createHash('sha1').update(filePath).digest('hex').slice(0, 16)
 }
 
@@ -88,17 +88,13 @@ export async function readTrack(filePath: string): Promise<Track> {
     // mp4/mov without a video track is just music
     const tracks = meta.format.trackInfo ?? []
     if (kind === 'video' && tracks.length > 0 && !tracks.some((t) => t.type === TrackType.video)) kind = 'audio'
-    const picture = selectCover(meta.common.picture)
-    if (picture) {
-      const ext = COVER_EXTENSIONS[picture.format] ?? 'jpg'
-      await mkdir(coversDir(), { recursive: true })
-      await writeFile(path.join(coversDir(), `${id}.${ext}`), picture.data)
-      cover = `${MEDIA_SCHEME}://cover/${id}.${ext}`
-    }
+    cover = await embeddedCover(id, selectCover(meta.common.picture))
   } catch (error) {
     // bad tags shouldn't stop playback, fall back to the filename
     console.warn(`[library] metadata read failed for ${normalized}:`, error)
   }
+
+  if (!cover && kind === 'audio') cover = await folderCover(id, normalized).catch(() => null)
 
   return {
     id,

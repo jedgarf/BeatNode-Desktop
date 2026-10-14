@@ -13,3 +13,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 window.ipcRenderer.on('main-process-message', (_event, message) => {
   console.log(message)
 })
+
+// let the intro play once, then fade it out
+const splash = document.getElementById('splash')
+if (splash) {
+  const shownFor = performance.now()
+  window.setTimeout(() => {
+    splash.classList.add('out')
+    splash.addEventListener('transitionend', () => splash.remove(), { once: true })
+  }, Math.max(0, 1600 - shownFor))
+}

@@ -44,7 +44,8 @@ function captureFrame(src: string): Promise<string | null> {
   })
 }
 
-export function useVideoThumbnails(): void {
+// videos get a frame, songs ask main for embedded, folder or online art
+export function useArtwork(): void {
   useEffect(() => {
     let running = false
     let cancelled = false
@@ -55,13 +56,17 @@ export function useVideoThumbnails(): void {
       running = true
       try {
         while (!cancelled) {
-          const next = usePlayerStore.getState().library.find((t) => t.kind === 'video' && !t.cover && !attempted.has(t.id))
+          const next = usePlayerStore.getState().library.find((t) => !t.cover && !attempted.has(t.id))
           if (!next) break
           attempted.add(next.id)
-          const dataUrl = await captureFrame(next.src)
-          if (!dataUrl || cancelled) continue
-          const cover = await window.beatnode.saveCover(next.id, dataUrl)
-          if (cover) usePlayerStore.getState().setCover(next.id, cover)
+          let cover: string | null = null
+          if (next.kind === 'video') {
+            const dataUrl = await captureFrame(next.src)
+            if (dataUrl && !cancelled) cover = await window.beatnode.saveCover(next.id, dataUrl)
+          } else {
+            cover = await window.beatnode.findCover(next.path, next.artist, next.title).catch(() => null)
+          }
+          if (cover && !cancelled) usePlayerStore.getState().setCover(next.id, cover)
         }
       } finally {
         running = false

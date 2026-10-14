@@ -5,7 +5,7 @@ import { PlayerBar } from './components/layout/PlayerBar'
 import { Sidebar, type ViewId } from './components/layout/Sidebar'
 import { HomeView } from './features/library/HomeView'
 import { LibraryView } from './features/library/LibraryView'
-import { useVideoThumbnails } from './features/library/useVideoThumbnails'
+import { useArtwork } from './features/library/useArtwork'
 import { usePersistence } from './features/library/usePersistence'
 import { useAudioEngine } from './features/player/useAudioEngine'
 import { useMediaSession } from './features/player/useMediaSession'
@@ -28,7 +28,7 @@ export default function App() {
   useTheme()
   usePersistence()
   useSync()
-  useVideoThumbnails()
+  useArtwork()
   useAutoOpenForVideo()
   useAudioEngine()
   useMediaSession()
@@ -44,7 +44,7 @@ export default function App() {
         <div className="relative min-w-0 flex-1">
           <main className="h-full overflow-y-auto">
             <div className="drag-region sticky top-0 z-10 h-12 bg-gradient-to-b from-base/80 to-transparent" />
-            <div className="-mt-12 px-8 pb-8 pt-16">
+            <div key={view} className="-mt-12 animate-view-in px-8 pb-8 pt-16">
               <View />
             </div>
           </main>

@@ -5,17 +5,23 @@ import { useNowPlayingStore } from '../../features/player/nowPlayingStore'
 import { selectCurrentTrack, usePlayerStore } from '../../features/player/store'
 import { CoverArt } from '../ui/CoverArt'
 import { NextIcon, PauseIcon, PlayIcon, PrevIcon } from '../ui/icons'
+import { Equalizer } from '../ui/Equalizer'
 import { Slider } from '../ui/Slider'
+import type { Track } from '../../shared/types'
 
 const CONTROLS_HIDE_MS = 2500
 
 export function NowPlaying() {
   const open = useNowPlayingStore((s) => s.open)
-  if (!open) return null
-  return <NowPlayingPanel />
+  const [mounted, setMounted] = useState(open)
+  useEffect(() => {
+    if (open) setMounted(true)
+  }, [open])
+  if (!mounted) return null
+  return <NowPlayingPanel closing={!open} onClosed={() => setMounted(false)} />
 }
 
-function NowPlayingPanel() {
+function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: () => void }) {
   const track = usePlayerStore(selectCurrentTrack)
   const isPlaying = usePlayerStore((s) => s.isPlaying)
   const currentTime = usePlayerStore((s) => s.currentTime)
@@ -83,8 +89,18 @@ function NowPlayingPanel() {
   const showFullscreenControls = isFullscreen && (controlsVisible || !isPlaying)
 
   return (
-    <div className="absolute inset-0 z-20 flex flex-col bg-base/95 backdrop-blur-2xl">
-      <header className="flex items-center gap-3 px-6 pb-2 pt-3">
+    <div
+      onAnimationEnd={(event) => {
+        if (closing && event.target === event.currentTarget) onClosed()
+      }}
+      className={`absolute inset-0 z-20 flex flex-col overflow-hidden bg-base/95 backdrop-blur-2xl ${closing ? 'animate-panel-out' : 'animate-panel-in'}`}
+    >
+      {!isVideo && track && (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <CoverArt key={track.id} track={track} className="w-[70%] max-w-3xl animate-breathe rounded-full blur-[120px] saturate-150" />
+        </div>
+      )}
+      <header className="relative flex items-center gap-3 px-6 pb-2 pt-3">
         <button
           type="button"
           onClick={() => close(false)}
@@ -124,11 +140,16 @@ function NowPlayingPanel() {
             aria-label="Video"
           />
         ) : (
-          <div className="flex h-full flex-col items-center justify-center gap-6 p-8">
-            <CoverArt track={track} className="w-full max-w-sm rounded-3xl shadow-2xl shadow-black/50" />
-            <div className="text-center">
+          <div className="flex h-full flex-col items-center justify-center gap-10 p-8">
+            <Record track={track} spinning={isPlaying} />
+            <div key={track?.id} className="animate-fade-up text-center">
               <h2 className="text-2xl font-bold tracking-tight">{track?.title ?? 'Nothing playing'}</h2>
               {track && <p className="mt-1 text-fg/60">{track.artist}</p>}
+              {track && (
+                <div className="mt-4 flex justify-center text-accent-soft">
+                  <Equalizer playing={isPlaying} className="h-4" />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -159,6 +180,26 @@ function NowPlayingPanel() {
             </div>
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+// sleeve on the left, the disc slides out and spins while playing
+function Record({ track, spinning }: { track: Track | null; spinning: boolean }) {
+  return (
+    <div className="relative aspect-[1.45] w-[min(34rem,80%,52vh)]">
+      <div
+        className={`absolute inset-y-[4%] left-0 aspect-square transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${spinning ? 'translate-x-[43%]' : 'translate-x-[16%]'}`}
+      >
+        <div className="vinyl relative size-full rounded-full animate-vinyl" style={{ animationPlayState: spinning ? 'running' : 'paused' }}>
+          <CoverArt track={track} className="absolute left-1/2 top-1/2 w-[34%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+          <span className="absolute left-1/2 top-1/2 size-[3%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-base" />
+        </div>
+        <div className="vinyl-sheen pointer-events-none absolute inset-0 rounded-full" />
+      </div>
+      <div key={track?.id} className="relative h-full animate-fade-up">
+        <CoverArt track={track} className="h-full rounded-2xl shadow-2xl shadow-black/50 ring-1 ring-white/10" />
       </div>
     </div>
   )

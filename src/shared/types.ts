@@ -68,6 +68,9 @@ export interface LibraryPrefs {
 export interface BeatNodeApi {
   openAudioFiles(): Promise<Track[]>
   saveCover(trackId: string, dataUrl: string): Promise<string | null>
+  findCover(filePath: string, artist: string, title: string): Promise<string | null>
+  getOnlineArtwork(): Promise<boolean>
+  setOnlineArtwork(enabled: boolean): Promise<void>
   loadLibrary(): Promise<Track[]>
   saveLibrary(tracks: Track[]): Promise<void>
   loadPlaylists(): Promise<unknown[]>
