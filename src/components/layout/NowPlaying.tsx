@@ -48,6 +48,8 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
   const showLyrics = (lyrics !== null || lyricsLoading) && lyricsOn
   const karaoke = useKaraokeStore((s) => s.enabled)
   const toggleKaraoke = useKaraokeStore((s) => s.toggle)
+  const karaokeStrength = useKaraokeStore((s) => s.strength)
+  const setKaraokeStrength = useKaraokeStore((s) => s.setStrength)
 
   // put the shared element in the page while a video is showing
   useEffect(() => {
@@ -126,6 +128,21 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
           <p className="truncate text-sm font-semibold" title={track?.title}>{track?.title ?? 'Nothing playing'}</p>
           {track && <p className="truncate text-xs text-fg/50" title={track.artist}>{track.artist}</p>}
         </div>
+        {track && karaoke && (
+          <div className="no-drag flex w-32 items-center gap-2 text-[11px] tabular-nums text-fg/50" title="How much of the voice to take out">
+            <Slider
+              value={karaokeStrength * 100}
+              max={100}
+              step={5}
+              onChange={(v) => setKaraokeStrength(v / 100)}
+              onCommit={(v) => setKaraokeStrength(v / 100)}
+              label="Voice removal strength"
+              valueText={`${Math.round(karaokeStrength * 100)}%`}
+              className="flex-1"
+            />
+            <span className="w-8 text-right">{Math.round(karaokeStrength * 100)}%</span>
+          </div>
+        )}
         {track && (
           <button
             type="button"
