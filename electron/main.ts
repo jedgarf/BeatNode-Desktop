@@ -235,6 +235,7 @@ function showAbout() {
     width: 340,
     height: 420,
     title: 'About BeatNode',
+    icon: path.join(process.env.VITE_PUBLIC, 'beatnode.png'),
     resizable: false,
     minimizable: false,
     maximizable: false,
