@@ -177,7 +177,7 @@ export function LibraryView() {
                 className={`rounded-full bg-fg/5 text-fg/70 ring-1 ring-fg/10 outline-none focus:ring-accent ${ease} ${compact ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-sm'}`}
               >
                 {SORTS.map(({ id, label }) => (
-                  <option key={id} value={id}>{label}</option>
+                  <option key={id} value={id} className="bg-elevated text-fg">{label}</option>
                 ))}
               </select>
             </div>
