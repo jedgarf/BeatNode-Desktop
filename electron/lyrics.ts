@@ -108,6 +108,8 @@ interface LrclibEntry {
 
 // a different cut of the same song is a few seconds off, past this the timing would drift too far
 const DURATION_TOLERANCE_SECONDS = 10
+// past the tolerance, a timed version still beats none when it is close enough to nudge into place
+const LOOSE_TOLERANCE_SECONDS = 30
 
 // "Céline Dion / The Power of Love (Remastered)" -> "celinedion/powerofove" style key, spaces and marks gone
 function squash(value: string): string {
@@ -121,8 +123,17 @@ function squash(value: string): string {
 }
 
 // "Celine Dion ft. R Kelly" -> "Celine Dion", the catalog lists the lead artist first more often than not
+// "Cover by Khel, Bugoy" -> "Khel", file names of covers often say so
+function artistNames(artist: string): string[] {
+  const named = artist.replace(/^\s*(?:a\s+)?cover(?:ed)?\s+by\s+/i, '')
+  return named
+    .split(/\s+(?:ft\.?|feat\.?|featuring|with|x|&|and)\s+|\s*[,;/]\s*(?:and\s+)?/i)
+    .map((name) => name.trim())
+    .filter(Boolean)
+}
+
 function leadArtist(artist: string): string {
-  return artist.split(/\s+(?:ft\.?|feat\.?|featuring|with|x|&|and)\s+|\s*[,;/]\s*/i)[0].trim()
+  return artistNames(artist)[0] ?? ''
 }
 
 function stripNoise(title: string): string {
@@ -158,9 +169,10 @@ function sameArtist(wanted: string, candidate: string): boolean {
   return !a || !b || a.includes(b) || b.includes(a)
 }
 
-function fromLrclib(entry: LrclibEntry | null | undefined): LyricsResult | null {
+// timing from a cut too far off would drift, so those only lend their words
+function fromLrclib(entry: LrclibEntry | null | undefined, request: LyricsRequest): LyricsResult | null {
   if (!entry || entry.instrumental) return null
-  if (entry.syncedLyrics) {
+  if (entry.syncedLyrics && gap(entry, request) <= LOOSE_TOLERANCE_SECONDS) {
     const parsed = parseLrc(entry.syncedLyrics)
     if (parsed?.lines) return { ...parsed, source: 'online' }
   }
@@ -168,31 +180,53 @@ function fromLrclib(entry: LrclibEntry | null | undefined): LyricsResult | null 
   return null
 }
 
+function gap(entry: LrclibEntry, request: LyricsRequest): number {
+  return request.duration > 0 && entry.duration ? Math.abs(entry.duration - request.duration) : 0
+}
+
+// 3 timed and the same length, 2 timed but a little off (the lyrics offset can fix that), 1 words only
+function quality(entry: LrclibEntry | null, request: LyricsRequest): number {
+  if (!entry) return 0
+  if (entry.syncedLyrics && gap(entry, request) <= DURATION_TOLERANCE_SECONDS) return 3
+  if (entry.syncedLyrics && gap(entry, request) <= LOOSE_TOLERANCE_SECONDS) return 2
+  return entry.plainLyrics || entry.syncedLyrics ? 1 : 0
+}
+
 // pick the entry that is the same song, preferring timed lyrics and then the closest length
 export function pickEntry(entries: LrclibEntry[], request: LyricsRequest): LrclibEntry | null {
   const artist = leadArtist(request.artist)
+  const names = artistNames(request.artist)
   const title = squash(stripNoise(request.title))
-  const matching = entries.filter((e) => !e.instrumental && sameArtist(artist, e.artistName ?? '') && sameTitle(title, e.trackName ?? '', artist))
-  const gap = (e: LrclibEntry) => (request.duration > 0 && e.duration ? Math.abs(e.duration - request.duration) : 0)
-  const byCloseness = (a: LrclibEntry, b: LrclibEntry) => gap(a) - gap(b)
-
-  const timed = matching.filter((e) => e.syncedLyrics && gap(e) <= DURATION_TOLERANCE_SECONDS).sort(byCloseness)
-  if (timed[0]) return timed[0]
-  // words without timing don't depend on the length, so any cut will do
-  return matching.filter((e) => e.plainLyrics || e.syncedLyrics).sort(byCloseness)[0] ?? null
+  // a duet or cover may be filed under any of the singers
+  const byArtist = (e: LrclibEntry) => (names.length ? names : ['']).some((name) => sameArtist(name, e.artistName ?? ''))
+  const matching = entries.filter((e) => !e.instrumental && byArtist(e) && sameTitle(title, e.trackName ?? '', artist))
+  const best = matching.sort((a, b) => quality(b, request) - quality(a, request) || gap(a, request) - gap(b, request))[0]
+  return best && quality(best, request) > 0 ? best : null
 }
 
 export async function fromOnline(request: LyricsRequest): Promise<LyricsResult | null> {
+  const found = await lookup(request)
+  if (quality(found, request) === 3) return fromLrclib(found, request)
+  // untagged files fall back to "Artist - Title" from the name, so "Title - Artist" files arrive swapped
+  const swapped = { ...request, title: request.artist, artist: request.title, album: '' }
+  const other = await lookup(swapped)
+  return quality(other, swapped) > quality(found, request) ? fromLrclib(other, swapped) : fromLrclib(found, request)
+}
+
+// the closest entry for this title and artist, stopping early once one is timed to the same length
+async function lookup(request: LyricsRequest): Promise<LrclibEntry | null> {
   const artist = leadArtist(request.artist)
   const title = stripNoise(request.title)
+  if (!artist || !title) return null
+  const pool: LrclibEntry[] = []
 
   const exact: Record<string, string> = { track_name: title, artist_name: artist }
   if (request.album && request.album !== 'Unknown Album') exact.album_name = request.album
   if (request.duration > 0) exact.duration = String(Math.round(request.duration))
   const direct = (await lrclib('get', exact)) as LrclibEntry | null
   if (direct && !direct.instrumental) {
-    const result = fromLrclib(direct)
-    if (result) return result
+    if (quality(direct, request) === 3) return direct
+    pool.push(direct)
   }
 
   // free text copes with "The", spacing and spelling, the structured search is the tighter second try
@@ -201,17 +235,19 @@ export async function fromOnline(request: LyricsRequest): Promise<LyricsResult |
   const queries: Array<Record<string, string>> = [{ q: `${artist} ${title}` }]
   if (spaced !== title) queries.push({ q: `${artist} ${spaced}` })
   queries.push({ track_name: title, artist_name: artist })
+  // the catalog may spell the artist differently ("Budakhel" for "Khel"), pickEntry still checks it
+  queries.push({ track_name: title }, { q: title })
   for (const query of queries) {
-    const found = (await lrclib('search', query)) as LrclibEntry[] | null
-    const picked = pickEntry(found ?? [], request)
-    const result = fromLrclib(picked)
-    if (result) return result
+    const found = ((await lrclib('search', query)) as LrclibEntry[] | null) ?? []
+    pool.push(...found)
+    const picked = pickEntry(found, request)
+    if (quality(picked, request) === 3) return picked
   }
-  return null
+  return pickEntry(pool, request)
 }
 
-// bump when the matching gets better, so misses from the old rules are looked up again
-const MATCHER_VERSION = 2
+// bump when the matching gets better, so misses and untimed finds from the old rules are looked up again
+const MATCHER_VERSION = 4
 
 interface CacheEntry {
   v?: number
@@ -222,8 +258,8 @@ interface CacheEntry {
 async function cached(id: string): Promise<CacheEntry | null> {
   try {
     const entry = JSON.parse(await readFile(path.join(lyricsDir(), `${id}.json`), 'utf8')) as CacheEntry
-    // a hit stays good, only the misses depend on how clever the matching was
-    return entry.result || entry.v === MATCHER_VERSION ? entry : null
+    // timed lyrics stay good, misses and words-only finds depend on how clever the matching was
+    return entry.result?.lines || entry.v === MATCHER_VERSION ? entry : null
   } catch {
     return null
   }
