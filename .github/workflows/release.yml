@@ -39,7 +39,13 @@ jobs:
           npx tsc --noEmit
 
       - name: Build renderer and main
-        run: npx vite build
+        run: |
+          [ -f .env ] || cp .env.sample .env
+          npx vite build
+        shell: bash
+        env:
+          # set under Settings > Secrets and variables > Actions > Variables, wins over .env
+          VITE_DEVELOPER_URL: ${{ vars.DEVELOPER_URL }}
 
       - name: Package installer
         run: npx electron-builder --publish never

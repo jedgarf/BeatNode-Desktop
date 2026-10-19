@@ -1,11 +1,11 @@
 // @see - https://www.electron.build/configuration/configuration
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "com.jefdev.beatnode.desktop",
+  "appId": "com.jefbuilds.beatnode.desktop",
   "asar": true,
   "asarUnpack": ["**/node_modules/better-sqlite3/**"],
   "productName": "BeatNode",
-  "copyright": "Copyright © 2026 JEFDev",
+  "copyright": "Copyright © 2026 JEFBuilds",
   "directories": {
     "output": "release/${version}"
   },

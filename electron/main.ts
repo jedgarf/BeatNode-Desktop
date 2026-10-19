@@ -314,7 +314,7 @@ function buildMenu() {
 }
 
 // windows shows this id in notifications and taskbar grouping instead of electron.app.*
-if (process.platform === 'win32') app.setAppUserModelId('com.jefdev.beatnode.desktop')
+if (process.platform === 'win32') app.setAppUserModelId('com.jefbuilds.beatnode.desktop')
 
 app.whenReady().then(() => {
   buildMenu()

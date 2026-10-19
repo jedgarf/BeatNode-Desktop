@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { LogoMark } from '../../components/ui/Logo'
 import { useTheme } from '../settings/theme'
 
-export const DEVELOPER_URL = 'https://jefdev.vercel.app'
+export const DEVELOPER_URL = import.meta.env.VITE_DEVELOPER_URL
 
 export function AboutView() {
   useTheme()
@@ -26,11 +26,15 @@ export function AboutView() {
       <p className="mt-4 text-sm text-fg/80">Your music and videos, in one place.</p>
       <p className="mt-6 text-xs text-fg/50">
         Developed by{' '}
-        <a href={DEVELOPER_URL} target="_blank" rel="noreferrer" className="font-semibold text-accent-soft hover:underline">
-          JEFDev
-        </a>
+        {DEVELOPER_URL ? (
+          <a href={DEVELOPER_URL} target="_blank" rel="noreferrer" className="font-semibold text-accent-soft hover:underline">
+            JEFBuilds
+          </a>
+        ) : (
+          <span className="font-semibold text-accent-soft">JEFBuilds</span>
+        )}
       </p>
-      <p className="mt-1 text-xs text-fg/40">&copy; {new Date().getFullYear()} JEFDev</p>
+      <p className="mt-1 text-xs text-fg/40">&copy; {new Date().getFullYear()} JEFBuilds</p>
     </div>
   )
 }

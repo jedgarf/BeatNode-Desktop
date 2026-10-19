@@ -87,9 +87,13 @@ function Credits() {
   return (
     <p className="mt-8 text-center text-xs text-fg/40">
       BeatNode{version && ` ${version}`} &middot; Developed by{' '}
-      <a href={DEVELOPER_URL} target="_blank" rel="noreferrer" className="font-semibold text-fg/60 transition hover:text-accent-soft">
-        JEFDev
-      </a>
+      {DEVELOPER_URL ? (
+        <a href={DEVELOPER_URL} target="_blank" rel="noreferrer" className="font-semibold text-fg/60 transition hover:text-accent-soft">
+          JEFBuilds
+        </a>
+      ) : (
+        <span className="font-semibold text-fg/60">JEFBuilds</span>
+      )}
     </p>
   )
 }
