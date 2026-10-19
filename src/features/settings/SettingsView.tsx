@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DEVELOPER_URL } from '../about/AboutView'
+import { DeveloperName } from '../about/AboutView'
 import { StickyHeader } from '../../components/layout/StickyHeader'
 import { SettingsIcon } from '../../components/ui/icons'
 import { PageTitle } from '../../components/ui/PageTitle'
@@ -85,15 +85,9 @@ function Credits() {
     window.beatnode.getAppInfo().then((info) => setVersion(info.version)).catch(console.error)
   }, [])
   return (
-    <p className="mt-8 text-center text-xs text-fg/40">
-      BeatNode{version && ` ${version}`} &middot; Developed by{' '}
-      {DEVELOPER_URL ? (
-        <a href={DEVELOPER_URL} target="_blank" rel="noreferrer" className="font-semibold text-fg/60 transition hover:text-accent-soft">
-          JEFBuilds
-        </a>
-      ) : (
-        <span className="font-semibold text-fg/60">JEFBuilds</span>
-      )}
-    </p>
+    <div className="mt-8 flex flex-col items-center gap-1.5 text-center text-xs text-fg/40">
+      <p>BeatNode{version && ` ${version}`} &middot; Developed by</p>
+      <DeveloperName className="text-sm text-fg/60 transition hover:text-accent-soft" logoSize={28} />
+    </div>
   )
 }

@@ -233,7 +233,7 @@ function showAbout() {
   }
   aboutWin = new BrowserWindow({
     width: 340,
-    height: 390,
+    height: 420,
     title: 'About BeatNode',
     resizable: false,
     minimizable: false,
