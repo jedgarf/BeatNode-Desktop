@@ -4,10 +4,11 @@ import { mediaElement } from '../../features/player/mediaElement'
 import { useNowPlayingStore } from '../../features/player/nowPlayingStore'
 import { selectCurrentTrack, usePlayerStore } from '../../features/player/store'
 import { CoverArt } from '../ui/CoverArt'
-import { ChevronDownIcon, ExitFullscreenIcon, FullscreenIcon, LyricsIcon, NextIcon, PauseIcon, PlayIcon, PrevIcon, VolumeLevelIcon } from '../ui/icons'
+import { ChevronDownIcon, ExitFullscreenIcon, FullscreenIcon, LyricsIcon, MicIcon, NextIcon, PauseIcon, PlayIcon, PrevIcon, VolumeLevelIcon } from '../ui/icons'
 import { Equalizer } from '../ui/Equalizer'
 import { Slider } from '../ui/Slider'
-import { LyricsPane } from './LyricsPane'
+import { LyricsLoading, LyricsPane } from './LyricsPane'
+import { useKaraokeStore } from '../../features/player/karaoke'
 import { useLyrics } from '../../features/player/useLyrics'
 import { useUiStore } from '../../features/settings/uiStore'
 import type { Track } from '../../shared/types'
@@ -41,10 +42,12 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
   const [controlsVisible, setControlsVisible] = useState(true)
 
   const isVideo = track?.kind === 'video'
-  const lyrics = useLyrics(isVideo ? null : track)
+  const { lyrics, loading: lyricsLoading } = useLyrics(isVideo ? null : track)
   const lyricsOn = useUiStore((s) => s.showLyrics)
   const toggleLyrics = useUiStore((s) => s.toggleLyrics)
-  const showLyrics = lyrics !== null && lyricsOn
+  const showLyrics = (lyrics !== null || lyricsLoading) && lyricsOn
+  const karaoke = useKaraokeStore((s) => s.enabled)
+  const toggleKaraoke = useKaraokeStore((s) => s.toggle)
 
   // put the shared element in the page while a video is showing
   useEffect(() => {
@@ -123,7 +126,20 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
           <p className="truncate text-sm font-semibold" title={track?.title}>{track?.title ?? 'Nothing playing'}</p>
           {track && <p className="truncate text-xs text-fg/50" title={track.artist}>{track.artist}</p>}
         </div>
-        {lyrics && (
+        {track && (
+          <button
+            type="button"
+            onClick={toggleKaraoke}
+            aria-label="Karaoke"
+            aria-pressed={karaoke}
+            title={karaoke ? 'Karaoke on: lead vocals removed. Click to bring them back' : 'Karaoke: remove the lead vocals'}
+            className={`no-drag flex items-center gap-1.5 rounded-full px-2.5 py-2 text-xs font-semibold transition hover:bg-fg/10 ${karaoke ? 'bg-accent/15 text-accent-soft' : 'text-fg/70 hover:text-fg'}`}
+          >
+            <MicIcon size={18} />
+            {karaoke && <span>Karaoke</span>}
+          </button>
+        )}
+        {(lyrics || lyricsLoading) && (
           <button
             type="button"
             onClick={toggleLyrics}
@@ -175,7 +191,7 @@ function NowPlayingPanel({ closing, onClosed }: { closing: boolean; onClosed: ()
                 )}
               </div>
             </div>
-            {showLyrics && lyrics && <LyricsPane key={track?.id} lyrics={lyrics} />}
+            {showLyrics && track && (lyrics ? <LyricsPane key={track.id} lyrics={lyrics} trackId={track.id} /> : <LyricsLoading key={track.id} />)}
           </div>
         )}
 

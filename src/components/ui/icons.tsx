@@ -24,7 +24,8 @@ export const VolumeLowIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d=
 export const VolumeMutedIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M11 5 6 9H2v6h4l5 4V5Z" /><path d="m22 9-6 6" /><path d="m16 9 6 6" /></Icon>
 export const FullscreenIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" /></Icon>
 export const ExitFullscreenIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" /></Icon>
-export const ChevronUpIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m18 15-6-6-6 6" /></Icon>
+export const MicIcon = (p: IconProps) => <Icon {...p} {...stroke}><rect x="9" y="2" width="6" height="12" rx="3" /><path d="M5 10v1a7 7 0 0 0 14 0v-1" /><path d="M12 18v4" /></Icon>
+export const ChevronUpIcon =(p: IconProps) => <Icon {...p} {...stroke}><path d="m18 15-6-6-6 6" /></Icon>
 export const ChevronDownIcon = (p: IconProps) => <Icon {...p} {...stroke}><path d="m6 9 6 6 6-6" /></Icon>
 
 export function VolumeLevelIcon({ volume, muted, ...p }: IconProps & { volume: number; muted: boolean }) {

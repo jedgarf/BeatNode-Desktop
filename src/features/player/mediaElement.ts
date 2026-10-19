@@ -4,5 +4,7 @@ export const mediaElement: HTMLVideoElement = (() => {
   element.preload = 'auto'
   element.playsInline = true
   element.controls = false
+  // without it Web Audio (karaoke) only hears silence, the beatnode:// scheme answers with CORS
+  element.crossOrigin = 'anonymous'
   return element
 })()

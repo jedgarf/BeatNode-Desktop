@@ -47,6 +47,7 @@
   --animate-panel-in: panel-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-panel-out: panel-out 0.22s ease-in both;
   --animate-fade-up: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
   --animate-vinyl: spin 4s linear infinite;
   --animate-breathe: breathe 9s ease-in-out infinite;
   --animate-eq: eq 0.9s ease-in-out infinite alternate;
@@ -79,6 +80,10 @@
   }
   @keyframes fade-up {
     from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
+  }
+  @keyframes shimmer {
+    from { background-position: 100% 0; }
+    to { background-position: -100% 0; }
   }
   @keyframes breathe {
     0%, 100% { transform: scale(1); opacity: 0.45; }
