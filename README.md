@@ -34,13 +34,19 @@ Grab the latest installer from the [Releases page](https://github.com/jedgarf/Be
 | --- | --- |
 | macOS (Apple Silicon) | `BeatNode-Mac-<version>-Installer.dmg` |
 | Windows (x64) | `BeatNode-Windows-<version>-Setup.exe` |
-| Linux | `BeatNode-Linux-<version>.AppImage` |
+| Linux | `BeatNode-Linux-<version>.AppImage` or `BeatNode-Linux-<version>-amd64.deb` |
+
+Or install from the terminal on macOS and Linux. It checks the download against the release's `SHA256SUMS.txt`, puts BeatNode in Applications on a Mac, and on Linux installs the `.deb` on Debian/Ubuntu or the AppImage anywhere else:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jedgarf/BeatNode-Desktop/main/install.sh | sh
+```
 
 The installers are not code signed yet, so your OS will warn you the first time:
 
-- **macOS**: right-click the app and choose Open, or run `xattr -cr /Applications/BeatNode.app` once.
+- **macOS**: right-click the app and choose Open, or run `xattr -cr /Applications/BeatNode.app` once. Not needed when installed from the terminal.
 - **Windows**: in the SmartScreen dialog click More info, then Run anyway.
-- **Linux**: `chmod +x BeatNode-Linux-*.AppImage`, then run it.
+- **Linux**: `chmod +x BeatNode-Linux-*.AppImage`, then run it. Or `sudo apt install ./BeatNode-Linux-*-amd64.deb`.
 
 ## Features
 
@@ -89,8 +95,18 @@ yarn dev
 | `yarn build` | Type check, bundle, and package an installer into `release/<version>` |
 | `yarn lint` | ESLint, zero warnings allowed |
 | `yarn preview` | Preview the renderer bundle in a browser |
+| `yarn store:appx` | Package the Microsoft Store `.appx` (Windows only) |
+| `yarn store:packages` | Download the `.appx` CI built for this version, for Partner Center |
 
-Installers: `dmg` on macOS, NSIS `exe` (x64) on Windows, `AppImage` on Linux. The `appId` and `productName` in [electron-builder.json5](electron-builder.json5) are still placeholders, change them before shipping.
+Installers: `dmg` on macOS, NSIS `exe` (x64) on Windows, `AppImage` and `deb` on Linux.
+
+### Releasing
+
+1. Bump `version` in `package.json`, commit, then tag and push: `git tag v1.2.8 && git push origin main v1.2.8`.
+2. CI builds every installer, publishes the GitHub release with a `SHA256SUMS.txt` (the terminal installer needs it), and keeps the Microsoft Store `.appx` as a run artifact for 30 days. The `.appx` is unsigned, the Store signs it, so it never goes on the public release.
+3. `yarn store:packages` downloads the `.appx` to `~/Downloads/BeatNode-Store-<version>/`. Upload it in Partner Center and submit.
+
+The Store identity (`identityName`, `publisher`) in [electron-builder.json5](electron-builder.json5) has to match Partner Center > Product identity. Once the listing is live, set the repository variable `STORE_PRODUCT_ID` (Settings > Secrets and variables > Actions > Variables) and the release notes link to the Store and `winget`.
 
 ## How it works
 

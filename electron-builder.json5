@@ -36,10 +36,28 @@
     "allowToChangeInstallationDirectory": true,
     "deleteAppDataOnUninstall": false
   },
+  // Microsoft Store package, built with `yarn store:appx` (needs Windows, CI does it).
+  // Left unsigned, the Store signs it. Identity is Partner Center > Product identity.
+  "appx": {
+    "artifactName": "${productName}-Store-${version}-${arch}.${ext}",
+    "identityName": "JEFBuilds.BeatNode",
+    "publisher": "CN=B46F1EF8-85F1-4F5B-8A9B-0EB2F1EB36E4",
+    "publisherDisplayName": "JEFBuilds",
+    "displayName": "BeatNode",
+    "backgroundColor": "transparent",
+    "languages": ["en-US"]
+  },
   "linux": {
+    "category": "AudioVideo",
+    "maintainer": "jedgarf",
+    "synopsis": "Local-first music and video player",
     "target": [
-      "AppImage"
+      "AppImage",
+      "deb"
     ],
     "artifactName": "${productName}-Linux-${version}.${ext}"
+  },
+  "deb": {
+    "artifactName": "${productName}-Linux-${version}-amd64.${ext}"
   }
 }

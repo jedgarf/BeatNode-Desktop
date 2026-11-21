@@ -6,6 +6,7 @@
   "private": true,
   "version": "1.2.7",
   "license": "MIT",
+  "homepage": "https://github.com/jedgarf/BeatNode-Desktop",
   "type": "module",
   "scripts": {
     "predev": "node scripts/dev-app-name.mjs",
@@ -13,6 +14,8 @@
     "build": "tsc && vite build && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
+    "store:appx": "electron-builder --win appx --x64 --publish never",
+    "store:packages": "node scripts/store-packages.mjs",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {

@@ -60,6 +60,21 @@ jobs:
             release/*/*.dmg
             release/*/*.exe
             release/*/*.AppImage
+            release/*/*.deb
+
+      # Unsigned (the Store signs it), so it stays out of the public release.
+      # `yarn store:packages` downloads it for Partner Center.
+      - name: Package for the Microsoft Store
+        if: runner.os == 'Windows'
+        run: yarn store:appx
+
+      - uses: actions/upload-artifact@v4
+        if: runner.os == 'Windows'
+        with:
+          name: store-appx
+          retention-days: 30
+          if-no-files-found: error
+          path: release/*/*.appx
 
   publish:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -68,13 +83,37 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
+          pattern: beatnode-*
           path: installers
           merge-multiple: true
 
+      - name: Checksums and release notes
+        env:
+          STORE_ID: ${{ vars.STORE_PRODUCT_ID }}
+        run: |
+          mkdir dist
+          find installers -type f \( -name '*.dmg' -o -name '*.exe' -o -name '*.AppImage' -o -name '*.deb' \) -exec mv {} dist/ \;
+          (cd dist && sha256sum * > SHA256SUMS.txt)
+          {
+            echo "### Install"
+            echo
+            echo "macOS (Apple silicon) and Linux, from the terminal:"
+            echo
+            echo '```'
+            echo "curl -fsSL https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/install.sh | sh"
+            echo '```'
+            if [ -n "$STORE_ID" ]; then
+              echo
+              echo "Windows: get it from the [Microsoft Store](https://apps.microsoft.com/detail/$STORE_ID), or \`winget install --id $STORE_ID\`."
+            fi
+            echo
+            echo "Debian/Ubuntu: \`sudo apt install ./BeatNode-Linux-*-amd64.deb\`"
+            echo
+            echo "SHA-256 of every file is in \`SHA256SUMS.txt\`."
+          } > notes.md
+
       - uses: softprops/action-gh-release@v2
         with:
-          files: |
-            installers/**/*.dmg
-            installers/**/*.exe
-            installers/**/*.AppImage
+          files: dist/*
+          body_path: notes.md
           generate_release_notes: true
