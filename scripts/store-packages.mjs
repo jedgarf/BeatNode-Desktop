@@ -28,9 +28,12 @@ try {
 } catch {
   fail('Could not list the CI runs. Is gh installed and signed in? (gh auth login)')
 }
-// the tag's run first, then manual runs from main (those build whatever version main is at)
-const run = runs.find((r) => r.headBranch === `v${version}`) ?? runs.find((r) => r.event === 'workflow_dispatch')
-if (!run) fail(`No finished Release run for v${version}. Push the tag or start the workflow by hand, then try again.`)
+// the tag's run first, then manual runs from main (those build whatever version main is at).
+// older runs may predate the appx or have expired, so only take one that still has it
+const hasAppx = (id) => gh(['api', `repos/${repo}/actions/runs/${id}/artifacts`, '--jq', '.artifacts[] | select(.name == "store-appx" and (.expired | not)) | .name']).trim() !== ''
+const candidates = [...runs.filter((r) => r.headBranch === `v${version}`), ...runs.filter((r) => r.event === 'workflow_dispatch')]
+const run = candidates.find((r) => hasAppx(r.databaseId))
+if (!run) fail(`No Release run with a Store package for v${version}. Push the tag or start the workflow by hand, then try again.`)
 
 rmSync(out, { recursive: true, force: true })
 mkdirSync(out, { recursive: true })
